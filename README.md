@@ -285,6 +285,10 @@ Documentation for Digital Forensics and Incident Response Tools and Techniques
     * To follow a packet stream: Right Click -> Follow > TCP/UDP/SSL/HTTP Stream
     * To extract HTTP files from packets: File -> Export Objects -> HTTP -> Highlight File -> Save As
     * To extract FTP files from packets: filter FTP-DATA packets for export -> Right Click -> Follow > TCP Stream -> Show and save data as Raw
+    * To extract files from streams: Follow TCP Stream -> Save stream as raw -> Analyze with exif-tools or change file extension
+    * To search for domain names: Statistics -> Search for IP
+    * To identify hostnames from DHCP traffic: `ip.src==xxx.xxx.xxx.xxx && dhcp` -> search for Host Name in the DHCP Options of a DHCP request packet
+    * To search for http redirction: `ttp.response.code==301` or search for the http.referer field
     * Helpful Windows
         * Conversations
         * Protocol Hierarchy
@@ -294,6 +298,8 @@ Documentation for Digital Forensics and Incident Response Tools and Techniques
     * [Wireshark Training Resources](https://www.wireshark.org/docs/)
     * [Into to Wireshark Video](https://www.youtube.com/watch?v=jvuiI1Leg6w)
     * [Wireshark Tutorial](https://www.varonis.com/blog/how-to-use-wireshark)
+    * [Export Wireshark Data from TCP Stream](https://medium.com/@sshekhar01/cyberdefenders-packetmaze-beffc1d05cb)
+    * [Identifying Hosts and Users using Wireshark](https://unit42.paloaltonetworks.com/using-wireshark-identifying-hosts-and-users/)
 
 ## Basic Email Info
 * Email Protocols
@@ -517,6 +523,12 @@ Documentation for Digital Forensics and Incident Response Tools and Techniques
     * Scheduled tasks: `Get-ScheduledTask`
     * Scheduled tasks in ready state: `Get-ScheduledTask | Where State -eq "Ready"`
     * Specific scheduled task: `Get-ScheduledTask -TaskName 'NAME' | Select *`
+* Artifacts from recycle bin
+    * Location:
+        * Windows 10: C:\$Recycle.Bin 
+        * XP or older: C:\Recycler
+    * To display hidden files: `dir/a` or `Get-ChildItem -Hidden`
+    * Reference: https://df-stream.com/2016/04/fun-with-recycle-bin-i-files-windows-10/ 
 
 ## Linux Artifacts
 * Password Hashes
@@ -701,12 +713,16 @@ Documentation for Digital Forensics and Incident Response Tools and Techniques
         * `volatility -f memdump.mem --profile=PROFILE iehistory`: use iehistory plugin to pull internet browsing history
         * `volatility -f memdump.mem --profile=PROFILE filescan`: use filescan plugin to identify any files on the system from the memory image
         * `volatility -f memdump.mem --profile=PROFILE dumpfiles -n --dump-dir=./`: use dumpfiles plugin to retrieve files from the memory image, outputs files to current directory
+        * `volatility -f memdump.mem --profile=PROFILE procdump -n --dump-dir=./`: use procdump plugin to dump process executables from the memory image, outputs to current directory
+
     * Volatility Examples
         * `python vol.py -f /home/ubuntu/Desktop/Volatility\ memdump1.mem image info`: identify memory sample information like system architecture
         * `python vol.py -f /home/ubuntu/Desktop/Volatility\ memdump1.mem --profile=Win7SP1x64 pslist | grep “svchost.exe”`: find processes using volatility and pipe output into grep to search for lines containing "svchost.exe"
         * `python vol.py -f /home/ubuntu/Desktop/Volatility\ memdump1.mem --profile=Win7SP1x64 pslist | grep “svchost.exe” | wc -l`: outputs wordcount of number of ""svchost.exe" services identified by volatility
         * `python vol.py -f /home/ubuntu/Desktop/Volatility\ memdump1.mem --profile=Win7SP1x64 dlllist -p 2352`: find command line arguments used by process 2352
+        * `python vol.py -f /home/ubuntu/Desktop/Volatility\ Exercise/memdump2.mem --profile=Win7SP1x64 procdump -p 2940 --dump-dir /path/to/output/directory`: dumps the executable for process 2940 to current directory
 * Resources
+    * [Volatility Reference Guide](https://github.com/volatilityfoundation/volatility/wiki/Command-Reference)
     * [Volatility Downloads](https://www.volatilityfoundation.org/releases)
     * [Volatility Installation](https://github.com/volatilityfoundation/volatility/wiki/Installation)
     * [Volatility Wiki](https://github.com/volatilityfoundation/volatility/wiki)
@@ -957,6 +973,7 @@ Documentation for Digital Forensics and Incident Response Tools and Techniques
     * Process local Windows security event log (PowerShell must be run as Administrator): `.\DeepBlue.ps1` or `.\DeepBlue.ps1 -log security`
     * Process local Windows system event log: `.\DeepBlue.ps1 -log system`
     * Process evtx File: `.\DeepBlue.ps1 .\evtx\new-user-security.evtx`
+    * Process all logs and output to txt: `./DeepBlue.ps1 .\evtx\* > output.txt`
 * Resources
     * [DeepBlueCLI Repo](https://github.com/sans-blue-team/DeepBlueCLI)
     * [DeepBlieCLI Guide](https://www.socinvestigation.com/deepbluecli-powershell-module-for-threat-hunting/)
