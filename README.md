@@ -281,18 +281,24 @@ Documentation for Digital Forensics and Incident Response Tools and Techniques
         * All traffic except traffic from specified IP: `ip.addr != IP_address`
         * Traffic from src host using TCP 443, using TLC version 1.2: `ip.src_host == 192.168.1.7 and tcp.port == 443 and ssl.record.version == 0x0303`
         * Show specific HTTP method: `http.request.method == "POST"`
-    * More Display Filters here: https://wiki.wireshark.org/DisplayFilters
-    * To follow a packet stream: Right Click -> Follow > TCP/UDP/SSL/HTTP Stream
-    * To extract HTTP files from packets: File -> Export Objects -> HTTP -> Highlight File -> Save As
-    * To extract FTP files from packets: filter FTP-DATA packets for export -> Right Click -> Follow > TCP Stream -> Show and save data as Raw
-    * To extract files from streams: Follow TCP Stream -> Save stream as raw -> Analyze with exif-tools or change file extension
-    * To search for domain names: Statistics -> Search for IP
-    * To identify hostnames from DHCP traffic: `ip.src==xxx.xxx.xxx.xxx && dhcp` -> search for Host Name in the DHCP Options of a DHCP request packet
-    * To search for http redirction: `ttp.response.code==301` or search for the http.referer field
-    * Helpful Windows
-        * Conversations
-        * Protocol Hierarchy
-        * Endpoints
+        * Search for a string within a frame: `frame contains "string"`
+        * Search strings within packets: CTRL + F
+        * Host Identification from DHCP traffic: `ip.src==xxx.xxx.xxx && dhcp` then search for Host Name in the DHCP Options of a DHCP request packet
+        * Search for http redirection: `http.reaspon.code==301` or search for the http.referer field
+        * More Display Filters here: https://wiki.wireshark.org/DisplayFilters
+    * More Advanced Searching
+        * To follow a packet stream: Right Click -> Follow > TCP/UDP/SSL/HTTP Stream
+        * To extract HTTP files from packets: File -> Export Objects -> HTTP -> Highlight File -> Save As
+        * To extract FTP files from packets: filter FTP-DATA packets for export -> Right Click -> Follow > TCP Stream -> Show and save data as Raw
+        * To extract files from streams: Follow TCP Stream -> Save stream as raw -> Analyze with exif-tools or change file extension
+            * Example: `frame contains 20210429_152157.jpg” -> Follow TCP Stream -> Save stream as raw` -> then analyze with exif-tools or change file extension to view
+        * To search for domain names: Statistics -> Search for IP
+        * To identify hostnames from DHCP traffic: `ip.src==xxx.xxx.xxx.xxx && dhcp` -> search for Host Name in the DHCP Options of a DHCP request packet
+        * To search for http redirction: `http.response.code==301` or search for the http.referer field
+        * Helpful Windows
+            * Conversations
+            * Protocol Hierarchy
+            * Endpoints
 * Resources
     * [Wireshark User's Guide](https://www.wireshark.org/docs/wsug_html_chunked/)
     * [Wireshark Training Resources](https://www.wireshark.org/docs/)
@@ -445,7 +451,7 @@ Documentation for Digital Forensics and Incident Response Tools and Techniques
         * No data protection from power loss
         * No built in compression
         * No built in encryption
-*NTFS: Microsoft file system since Windows NT 3.1
+* NTFS: Microsoft file system since Windows NT 3.1
     * Improved performance, reliability, security (ACLs) and disk space from FAT
 * Linux architecture for EXT3 and EXT4
     * User space: user space -> sends to system call -> requeast sent to kernel
@@ -529,6 +535,9 @@ Documentation for Digital Forensics and Incident Response Tools and Techniques
         * XP or older: C:\Recycler
     * To display hidden files: `dir/a` or `Get-ChildItem -Hidden`
     * Reference: https://df-stream.com/2016/04/fun-with-recycle-bin-i-files-windows-10/ 
+* Processes
+    * Reference: https://www.socinvestigation.com/important-windows-processes-for-threat-hunting/ 
+    * To search for strings within an exe by using sysinternals strings: `strings -a file_name.exe > strings_from_file.exe`
 
 ## Linux Artifacts
 * Password Hashes
@@ -561,6 +570,7 @@ Documentation for Digital Forensics and Incident Response Tools and Techniques
     * Clear Files
         * Desktop, Downloads, Music, Pictures, Public, Templates, Videos
         * Trash Bin
+    * Super user startup scripts: `/etc/rc.local`
 
 ## FTK Imager
 * Description: tool for dumping memory to a .mem file, taking disk images, exporting files from disk images, generating MD5/SHA1 hashes for evidence, provides read only view of contents of disk image
@@ -584,6 +594,8 @@ Documentation for Digital Forensics and Incident Response Tools and Techniques
     * [Exiftool Installation](https://exiftool.org/install.html)
     * [Exiftool Linux Man Page](https://linux.die.net/man/1/exiftool)
     * [Online Exiftool](https://exif.tools/)
+    * [Another Online Exiftool](http://exif-viewer.com/)
+    * [Exporting DData from TCP Stream](https://medium.com/@sshekhar01/cyberdefenders-packetmaze-beffc1d05cb)
 
 ## Scalpel
 * Description: used to retrieve deleted files from .img files by using file carving
@@ -693,6 +705,8 @@ Documentation for Digital Forensics and Incident Response Tools and Techniques
     * Retrieve screenshots and clipboard contents
     * Retrieve hashed passwords
     * Retrieve SSL keys and certificates
+    * Find executables/commands related to processes
+    * Export processes
 * Installation: 
     * Can be downloaded and installed from https://www.volatilityfoundation.org/releases
         * Extract archive and run `setup.py`
@@ -716,7 +730,7 @@ Documentation for Digital Forensics and Incident Response Tools and Techniques
         * `volatility -f memdump.mem --profile=PROFILE procdump -n --dump-dir=./`: use procdump plugin to dump process executables from the memory image, outputs to current directory
 
     * Volatility Examples
-        * `python vol.py -f /home/ubuntu/Desktop/Volatility\ memdump1.mem image info`: identify memory sample information like system architecture
+        * `python vol.py -f /home/ubuntu/Desktop/Volatility\ memdump1.mem imageinfo`: identify memory sample information like system architecture
         * `python vol.py -f /home/ubuntu/Desktop/Volatility\ memdump1.mem --profile=Win7SP1x64 pslist | grep “svchost.exe”`: find processes using volatility and pipe output into grep to search for lines containing "svchost.exe"
         * `python vol.py -f /home/ubuntu/Desktop/Volatility\ memdump1.mem --profile=Win7SP1x64 pslist | grep “svchost.exe” | wc -l`: outputs wordcount of number of ""svchost.exe" services identified by volatility
         * `python vol.py -f /home/ubuntu/Desktop/Volatility\ memdump1.mem --profile=Win7SP1x64 dlllist -p 2352`: find command line arguments used by process 2352
@@ -730,6 +744,7 @@ Documentation for Digital Forensics and Incident Response Tools and Techniques
     * [Volatility GitHub](https://github.com/volatilityfoundation/volatility/wiki/Installation)
     * [Memory Samples for Test Analysis](https://github.com/volatilityfoundation/volatility/wiki/Memory-Samples)
     * [Volatility Cheat Sheet](https://book.hacktricks.xyz/generic-methodologies-and-resources/basic-forensic-methodology/memory-dump-analysis/volatility-examples)
+    * [Another Volatility Cheat Sheet](https://blog.onfvp.com/post/volatility-cheatsheet/)
     * [Volatility Tutorial](https://medium.com/@zemelusa/first-steps-to-volatile-memory-analysis-dcbd4d2d56a1)
 
 ## Autopsy
@@ -869,6 +884,9 @@ Documentation for Digital Forensics and Incident Response Tools and Techniques
     * [Critical Log Review Checklist for Security Incidents](https://zeltser.com/security-incident-log-review-checklist/)
     * [Windows security auditing — Event Log FAQ](https://eventlogxp.com/essentials/securityauditing.html)
     * [Windows Security Event Logs: my own cheatsheet](https://andreafortuna.org/2019/06/12/windows-security-event-logs-my-own-cheatsheet/)
+    * [Common Windows IDs for SOC](https://www.socinvestigation.com/most-common-windows-event-ids-to-hunt-mind-map/)
+    * [MyEventLog](https://www.myeventlog.com/)
+    * [Github Eventlog Database](https://github.com/stuhli/awesome-event-ids#event-id-databases)
 
 ## Linux Log Analysis
 * Description: keywords to search for in linux logs for log analysis
@@ -955,6 +973,16 @@ Documentation for Digital Forensics and Incident Response Tools and Techniques
         * Search source IP field (src) to any destination IP field (dst) on the 10.10.10.0/24: `search src="10.10.10.73" dst="10.10.10.*"`
         * Simple failed login failure search: `search pass* AND fail*`
         * Show executables denerated from process, in this case cmd.exe, from Sysmon logs: `index="botsv1" earliest=0 Image="*\\cmd.exe" | stats values(CommandLine) by host`
+        * Search for newly created windows user: search eventID field for 4270 or "net user"
+        * Search for windows user logins: search eventID field for 4624
+        * To search for web scanners: `index=index_name sourcetype=stream:http src_ip=xxx.xxx.xxx.xxx | stats count by src_headers | sort -count | head 3 `
+        * Search for .exe: `index=botsv1 sourcetype=stream:http dest_ip="xxx.xxx.xxx.xxx" *.exe`
+        * Search for credentials submitted to form:
+            ```
+            index=botsv1 sourcetype=stream:http dest_ip="xxx.xxx.xxx.xxx" http_method=POST form_data=*username*passwd* 
+            | rex field=form_data "passwd=(?<creds>\w+)" 
+            |table _time src_ip uri http_user_agent creds
+            ```
     * For more detailed usage see: https://github.com/EvolvingSysadmin/Splunk-Tools
 * Resources
     * [Splunk Guide](https://github.com/EvolvingSysadmin/Splunk-Tools)
