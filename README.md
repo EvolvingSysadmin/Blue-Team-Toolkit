@@ -932,6 +932,8 @@ Documentation for Digital Forensics and Incident Response Tools and Techniques
     * “Accepted password”, “Accepted publickey”, "session opened”
   * Failed User Login
     * “authentication failure”, “failed password”
+  * User added
+    * "adduser" or "useradd"
   * User Logoff
     * “session closed”
   * User account change or deletion
@@ -1018,23 +1020,58 @@ Documentation for Digital Forensics and Incident Response Tools and Techniques
     * Search for windows user logins: search eventID field for 4624
     * To search for web scanners: `index=index_name sourcetype=stream:http src_ip=xxx.xxx.xxx.xxx | stats count by src_headers | sort -count | head 3`
     * Search for .exe: `index=botsv1 sourcetype=stream:http dest_ip="xxx.xxx.xxx.xxx" *.exe`
+    * To display search results in reverse chronological order: `| reverse`
+  * Resources
+    * [Splunk Guide](https://github.com/EvolvingSysadmin/Splunk-Tools)
+    * [Basic Splunk Searches](https://docs.splunk.com/Documentation/Splunk/9.0.1/SearchTutorial/Startsearching)
+    * [Install Splunk on Linux](https://docs.splunk.com/Documentation/SplunkLight/7.3.6/Installation/InstallonLinux)
+    * [Install Splunk on Linux – Complete Setup Guide](https://www.inmotionhosting.com/support/security/install-splunk/)
+    * [How to install Splunk on an Ubuntu desktop VM (Virtual Box)](https://www.youtube.com/watch?v=TW4l7X6G6Ak)
+    * [Splunk Automatically Start upon Boot](https://docs.splunk.com/Documentation/Splunk/9.0.1/Admin/ConfigureSplunktostartatboottime)
+    * [Splunk Basic Search Video](https://www.youtube.com/watch?v=xtyH_6iMxwA)
+  * Advanced SPL Examples (more can be found at <https://github.com/EvolvingSysadmin/Splunk-Tools>)
     * Search for credentials submitted to form:
 
       ```SPL
       index=botsv1 sourcetype=stream:http dest_ip="xxx.xxx.xxx.xxx" http_method=POST form_data=*username*passwd* 
-            | rex field=form_data "passwd=(?<creds>\w+)" 
-            |table _time src_ip uri http_user_agent creds
+        | rex field=form_data "passwd=(?<creds>\w+)" 
+        | table _time src_ip uri http_user_agent creds
       ```
 
-  * For more detailed usage see: <https://github.com/EvolvingSysadmin/Splunk-Tools>
-* Resources
-  * [Splunk Guide](https://github.com/EvolvingSysadmin/Splunk-Tools)
-  * [Basic Splunk Searches](https://docs.splunk.com/Documentation/Splunk/9.0.1/SearchTutorial/Startsearching)
-  * [Install Splunk on Linux](https://docs.splunk.com/Documentation/SplunkLight/7.3.6/Installation/InstallonLinux)
-  * [Install Splunk on Linux – Complete Setup Guide](https://www.inmotionhosting.com/support/security/install-splunk/)
-  * [How to install Splunk on an Ubuntu desktop VM (Virtual Box)](https://www.youtube.com/watch?v=TW4l7X6G6Ak)
-  * [Splunk Automatically Start upon Boot](https://docs.splunk.com/Documentation/Splunk/9.0.1/Admin/ConfigureSplunktostartatboottime)
-  * [Splunk Basic Search Video](https://www.youtube.com/watch?v=xtyH_6iMxwA)
+    * To get metadata information on sourcetypes or other fields in an index:
+
+      ```SPL
+        | metadata type=sourcetypes index=botsv2 
+        | eval firstTime=strftime(firstTime,"%Y-%m-%d %H:%M:%S") 
+        | eval lastTime=strftime(lastTime,"%Y-%m-%d %H:%M:%S") 
+        | eval recentTime=strftime(recentTime,"%Y-%m-%d %H:%M:%S") 
+        | sort - totalCount
+      ```
+
+    * List all values within a field (eg sourcetype or source):
+
+      ```SPL
+      index="botsv3"
+        | top limit=* source
+        | sort - count
+      ```
+
+    * Time of crypto mining on host (fss = mining start fes = mining stop)
+
+      ```SPL
+      index="botsv3" source="cisconvmflowdata" coinhive
+        | stats min(fss) as starttime, max(fes) as endtime
+        | eval timetaken = endtime-starttime
+        | table timetaken
+      ```
+
+    * Search for IAM key of account that generated most distinct errors:
+
+      ```SPL
+      index="botsv3" sourcetype="aws:cloudtrail" user_type=IAMUser errorCode!=success eventSource="iam.amazonaws.com"
+        | stats dc(errorMessage) as errors by userIdentity.accessKeyId
+        | sort -errors
+      ```
 
 ## DeepBlueCLI
 
@@ -1087,7 +1124,6 @@ Documentation for Digital Forensics and Incident Response Tools and Techniques
 * GitTools
 * Nuclei
 * <https://linuxhint.com/kali_linux_top_forensic_tools/>
-
 * TODO:
   * Install/try phishtool and all other tools
   * Install sift workstation
