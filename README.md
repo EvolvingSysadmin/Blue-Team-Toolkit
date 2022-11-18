@@ -572,6 +572,7 @@ Documentation for Digital Forensics and Incident Response Tools and Techniques
   * `/var/log/cron`: cron jobs
   * `/var/log/secure`: authentication and authorization privileges (eg related to SSH)
   * `/var/log/faillog`: failedf user logins
+  * To search linux logs for a specific program/malware: `/var/log$ grep -iRl {keyword}`
 * Web Server Logs for Apache and Nginx
   * `var/log/apache2/access.log`: shows web server info in Apache, including:
     * Client IP
@@ -589,6 +590,7 @@ Documentation for Digital Forensics and Incident Response Tools and Techniques
     * Desktop, Downloads, Music, Pictures, Public, Templates, Videos
     * Trash Bin
   * Super user startup scripts: `/etc/rc.local`
+  * To show listening network connections: `netstat -tulnp`
 
 ## FTK Imager
 
@@ -775,7 +777,7 @@ Documentation for Digital Forensics and Incident Response Tools and Techniques
   * [Volatility GitHub](https://github.com/volatilityfoundation/volatility/wiki/Installation)
   * [Memory Samples for Test Analysis](https://github.com/volatilityfoundation/volatility/wiki/Memory-Samples)
   * [Volatility Cheat Sheet](https://book.hacktricks.xyz/generic-methodologies-and-resources/basic-forensic-methodology/memory-dump-analysis/volatility-examples)
-  * [Another Volatility Cheat Sheet](https://blog.onfvp.com/post/volatility-cheatsheet/)
+  * [Another Volatility3 v Volatility2 Cheat Sheet](https://blog.onfvp.com/post/volatility-cheatsheet/)
   * [Volatility Tutorial](https://medium.com/@zemelusa/first-steps-to-volatile-memory-analysis-dcbd4d2d56a1)
 
 ## Autopsy
