@@ -1075,6 +1075,13 @@ Documentation for Digital Forensics and Incident Response Tools and Techniques
         | sort -errors
       ```
 
+    * To detect syn scanning:
+
+      ```SPL
+      index="botsv3" tcp.flags.syn==1 and tcp.flags.ack==0 and tcp.window_size <= 1024
+
+      ```
+
 ## DeepBlueCLI
 
 * Description: PowerShell Module for Threat Hunting via Windows Event Log
