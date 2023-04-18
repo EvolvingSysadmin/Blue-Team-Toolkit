@@ -862,7 +862,7 @@ Documentation for Digital Forensics and Incident Response Tools and Techniques
   * Network devices: usually logged via Syslog; some use proprietary locations and formats
 * Resouces
   * [Critical Log Review Checklist for Security Incidents](https://zeltser.com/security-incident-log-review-checklist/)
-  * [Critical Log Review Checklist for Security Incidents PDF](./docs/security-incident-log-review-checklist.pdf)
+  * [Critical Log Review Checklist for Security Incidents PDF](./security-incident-log-review-checklist.pdf)
   * [Open Source Log Analysis Tools](http://www.securitywarriorconsulting.com/logtools/)
 
 ## Windows Log Analysis
