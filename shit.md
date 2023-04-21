@@ -1,42 +1,27 @@
-# Incident Response Lifecycle
-
-## Lifecycle Phases
-
-Preparation -> Detection and Analysis -> Containment, Eradication, and Recovery -> Lessons Learned and Reporting
-
-## Preparation
-
-* Create incident response plan
-  * Incident response plans should have the sections:
+* Phases
+  * Preparation
+    * Incident Response Plans Should Include the Following Sections:
     * Preparation
     * Identification
     * Containment
     * Eradication
     * Recovery
     * Lessons Learned
-  * Example Incident Response Plans
-    * [Carnegie Mellon University](https://www.cmu.edu/iso/governance/procedures/docs/incidentresponseplan1.0.pdf)
-    * [Wright State University](https://www.wright.edu/information-technology/policies)
-* Create Incident Response Team 
-  * Conduct training and create incident response run books
-  * [Microsoft Run Books](https://docs.microsoft.com/en-us/security/compass/incident-response-playbooks)
-  * [Run book examples](https://www.incidentresponse.org/playbooks/)
-* Create asset-inventories
-* Run risk assessments
-* Enact defensive measures, eg DMZ, NIDS/HIDS/NIPS, AV, Centralized Logging, EDR, Network Firewalls, Local Firewalls, WAFs, GPOs, NAC, web proxies, SPF/DKIM/DMARC, mark external emails, use email spam filters, DLP, sandboxing, attachment file restrictions, physical defenses, awareness training, phishing simulations, etc...
-
-## Detection and Analysis
-
-* Identify scanning, including:
-  * Remote to Local Scanning (R2L): Search for HTTP connections of non standard ports
-  * Remote to Local DoS/DDoS (L2R): search for anamolus traffic that differs from baselines
-  * Local to Local Scanning (L2L): internal vulnerability scanners
-* Login Failures: search for windows event ID 4625
-
-## Containment
-
-
-
+      * Example Incident Response Plans
+        * [Carnegie Mellon University](https://www.cmu.edu/iso/governance/procedures/docs/incidentresponseplan1.0.pdf)
+        * [Wright State University](https://www.wright.edu/information-technology/policies)
+        * Create Incident Response Team and conduct training and create incident response run books
+        * [Microsoft Run Books](https://docs.microsoft.com/en-us/security/compass/incident-response-playbooks)
+        * [Run book examples](https://www.incidentresponse.org/playbooks/)
+      * Create asset-inventories
+      * Run risk assessments
+      * Enact defensive measures, eg DMZ, NIDS/HIDS/NIPS, AV, Centralized Logging, EDR, Network Firewalls, Local Firewalls, WAFs, GPOs, NAC, web proxies, SPF/DKIM/DMARC, mark external emails, use email spam filters, DLP, sandboxing, attachment file restrictions, physical defenses, awareness training, phishing simulations, etc...
+  * Detection and Analysis
+    * Identify scanning, including:
+    * Remote to Local Scanning (R2L): Search for HTTP connections of non standard ports
+    * Remote to Local DoS/DDoS (L2R): search for anamolus traffic that differs from baselines
+    * Local to Local Scanning (L2L): internal vulnerability scanners
+    * Login Failures: search for windows event ID 4625
   * Containment
     * Perimeter containment
       * Block inbound traffic and outbound traffic.
