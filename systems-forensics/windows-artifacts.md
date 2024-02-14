@@ -65,3 +65,11 @@
 * Processes
   * Reference: <https://www.socinvestigation.com/important-windows-processes-for-threat-hunting/>
   * To search for strings within an exe by using sysinternals strings: `strings -a file_name.exe > strings_from_file.exe`
+
+Windows Process Analysis
+
+* A parent PowerShell process spawning a child PowerShell process can be indicative of a malicious script
+
+PowerShell: `Get-Processes` | findstr -I calc
+PowerShell: `Get-Processes | findstr -I calc`
+Procdump: `.procdump.exe -ma PID_Number`

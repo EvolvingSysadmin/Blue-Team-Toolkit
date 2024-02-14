@@ -53,3 +53,5 @@
   * [Volatility Cheat Sheet](https://book.hacktricks.xyz/generic-methodologies-and-resources/basic-forensic-methodology/memory-dump-analysis/volatility-examples)
   * [Another Volatility3 v Volatility2 Cheat Sheet](https://blog.onfvp.com/post/volatility-cheatsheet/)
   * [Volatility Tutorial](https://medium.com/@zemelusa/first-steps-to-volatile-memory-analysis-dcbd4d2d56a1)
+
+cd volatility3 -> python3 ./vol.py
