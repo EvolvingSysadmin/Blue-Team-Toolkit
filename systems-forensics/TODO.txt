@@ -1,0 +1,4 @@
+* Update existing content: continue using a standardized format for tools and for techniques/info
+* Incorporate content from coursework
+* Add TickTick content
+* Complete TryHackMe: Cyber Defense Path, AWS Path, SOC1 and SOC2 Paths
