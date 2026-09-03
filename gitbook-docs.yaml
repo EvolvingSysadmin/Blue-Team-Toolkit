@@ -1,0 +1,11 @@
+$schema: https://api.gitbook.com/gitbook-docs.yaml
+site:
+  title: Blue Team Toolkit
+  structure:
+    - type: space
+      key: space-1
+      title: Blue Team Toolkit
+      path: blue-team-toolkit
+      default: true
+      content:
+        directory: ./blue-team-toolkit
