@@ -43,12 +43,44 @@ markdown_extensions:
   - toc:
       permalink: true
   - pymdownx.highlight
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.inlinehilite
   - pymdownx.details
 
 nav:
   - Home: index.md
+  - Playbooks:
+      - playbooks/index.md
+      - Incident Response:
+          - playbooks/incident-response/index.md
+          - Phishing: playbooks/incident-response/phishing.md
+          - Compromised Account / BEC: playbooks/incident-response/bec.md
+          - Ransomware: playbooks/incident-response/ransomware.md
+          - Endpoint Malware: playbooks/incident-response/endpoint-malware.md
+          - Exploited Edge Device: playbooks/incident-response/edge-device-exploitation.md
+          - AD Privileged Compromise: playbooks/incident-response/ad-privileged-compromise.md
+      - Alert Triage:
+          - playbooks/alert-triage/index.md
+          - Impossible Travel: playbooks/alert-triage/impossible-travel.md
+          - Password Spray: playbooks/alert-triage/password-spray.md
+          - MFA Fatigue: playbooks/alert-triage/mfa-fatigue.md
+          - Suspicious PowerShell: playbooks/alert-triage/suspicious-powershell.md
+          - New Inbox Forwarding Rule: playbooks/alert-triage/inbox-forwarding-rule.md
+          - New Privileged Account: playbooks/alert-triage/new-privileged-account.md
+      - Threat Hunting:
+          - playbooks/threat-hunting/index.md
+          - Persistence: playbooks/threat-hunting/persistence.md
+          - Kerberoasting: playbooks/threat-hunting/kerberoasting.md
+          - C2 Beaconing: playbooks/threat-hunting/c2-beaconing.md
+          - Living Off the Land Binaries: playbooks/threat-hunting/lolbins.md
+          - Dormant Accounts: playbooks/threat-hunting/dormant-accounts.md
+      - Operations:
+          - playbooks/operations/index.md
+          - Critical CVE Response: playbooks/operations/critical-cve-response.md
   - Incident Response:
       - incident-response/index.md
       - Preparation: incident-response/preparation.md
