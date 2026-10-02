@@ -1,57 +1,51 @@
 # Volatility
 
-* Description: used for memory forensics and has the following capabilities:
-  * List all processes that were running
-  * List active and closed network connections
-  * View internet history (IE)
-  * Identify files on the system and retrieve them from the memory dump
-  * Read the contents of notepad documents
-  * Retrieve commands entered into the Windows Command Prompt (CMD)
-  * Scan for the presence of malware using YARA rules
-  * Retrieve screenshots and clipboard contents
-  * Retrieve hashed passwords
-  * Retrieve SSL keys and certificates
-  * Find executables/commands related to processes
-  * Export processes
-* Installation:
-  * Can be downloaded and installed from <https://www.volatilityfoundation.org/releases>
-    * Extract archive and run `setup.py`
-  * Can be cloned from repo by using: `git clone https://github.com/volatilityfoundation/volatility.git`
-    * On Linux, extract archive and run: `sudo python setup.py install`
-* Usage
-  * Create Profile
-    * Run volatility on memory dump: `volatility -f memdump.mem imageinfo`
-    * Any other commands need to include profile: `--profile=WinXPSP2x86`
-  * Volatility Commands
-    * `volatility -f memdump.mem imageinfo`: take memory image “memdump.mem” and determine the suggested profile (OS version and architecture) for analysis
-    * `volatility -f memdump.mem --profile=PROFILE pslist`: use pslist plugin to print a list of processes to the terminal
-    * `volatility -f memdump.mem --profile=PROFILE pstree`: use pstree plugin to print a process tree to the terminal
-    * `volatility -f memdump.mem --profile=PROFILE psscan`: use psscan plugin to print all available processes,
-    * `volatility -f memdump.mem --profile=PROFILE psxview`: use psxview plugin to print expected and hidden processes
-    * `volatility -f memdump.mem --profile=PROFILE netscan`: use netscan plugin to identify any active or closed network connections
-    * `volatility -f memdump.mem --profile=PROFILE timeliner`: use timeliner plugin to create a timeline of events from the memory image
-    * `volatility -f memdump.mem --profile=PROFILE iehistory`: use iehistory plugin to pull internet browsing history
-    * `volatility -f memdump.mem --profile=PROFILE filescan`: use filescan plugin to identify any files on the system from the memory image
-    * `volatility -f memdump.mem --profile=PROFILE dumpfiles -n --dump-dir=./`: use dumpfiles plugin to retrieve files from the memory image, outputs files to current directory
-    * `volatility -f memdump.mem --profile=PROFILE procdump -n --dump-dir=./`: use procdump plugin to dump process executables from the memory image, outputs to current directory
-    * `volatility -f memdump.mem --profile=PROFILE hashdump`: extract and decrypt cached domain credentials stored in the registry
-  * Volatility Examples
-    * `python vol.py -f /home/ubuntu/Desktop/Volatility\ memdump1.mem imageinfo`: identify memory sample information like system architecture
-    * `python vol.py -f /home/ubuntu/Desktop/Volatility\ memdump1.mem --profile=Win7SP1x64 pslist | grep “svchost.exe”`: find processes using volatility and pipe output into grep to search for lines containing "svchost.exe"
-    * `python vol.py -f /home/ubuntu/Desktop/Volatility\ memdump1.mem --profile=Win7SP1x64 pslist | grep “svchost.exe” | wc -l`: outputs wordcount of number of ""svchost.exe" services identified by volatility
-    * `python vol.py -f /home/ubuntu/Desktop/Volatility\ memdump1.mem --profile=Win7SP1x64 dlllist -p 2352`: find command line arguments used by process 2352
-    * `python vol.py -f /home/ubuntu/Desktop/Volatility\ Exercise/memdump2.mem --profile=Win7SP1x64 procdump -p 2940 --dump-dir /path/to/output/directory`: dumps the executable for process 2940 to current directory
-    * `python vol.py -f mem_file.raw --profile=SuggestProfile pstree | grep "powershell\|cmd"`
+* Description: memory forensics framework for analyzing RAM captures. Capabilities include:
+  * Listing running and terminated processes, including hidden ones
+  * Process command lines, loaded DLLs, and handles
+  * Active and closed network connections
+  * Finding injected code
+  * Listing and extracting files and process executables from memory
+  * Registry hives and keys loaded in memory
+  * Password hashes and cached domain credentials
+  * Scanning memory with YARA rules
+* Volatility 3 is the current version (Python 3). Volatility 2 (Python 2, profile-based) is no longer maintained, but older training material and writeups still use it; see the comparison below
+* Installation
+  * `pip install volatility3` (provides the `vol` command)
+  * Or clone the repo: `git clone https://github.com/volatilityfoundation/volatility3.git` then run `python3 vol.py`
+  * Windows symbol tables are downloaded automatically on first use (internet access required) or can be installed offline from the symbol packs; Linux and macOS images need a matching symbol table (ISF)
+* Usage (Volatility 3, Windows image)
+  * `vol -f memdump.mem windows.info`: OS version and build of the image
+  * `vol -f memdump.mem windows.pslist`: list processes
+  * `vol -f memdump.mem windows.pstree`: process tree (parent-child relationships)
+  * `vol -f memdump.mem windows.psscan`: scan for process structures, including terminated and unlinked (hidden) processes
+  * `vol -f memdump.mem windows.cmdline`: command line arguments for each process
+  * `vol -f memdump.mem windows.dlllist --pid 2352`: DLLs loaded by process 2352
+  * `vol -f memdump.mem windows.netscan`: active and closed network connections
+  * `vol -f memdump.mem windows.malfind`: memory regions that may contain injected code
+  * `vol -f memdump.mem windows.svcscan`: services
+  * `vol -f memdump.mem windows.filescan`: file objects in memory
+  * `vol -f memdump.mem -o ./out windows.dumpfiles --pid 2940`: extract files associated with a process
+  * `vol -f memdump.mem -o ./out windows.pslist --pid 2940 --dump`: dump the executable for process 2940
+  * `vol -f memdump.mem windows.hashdump`: local account password hashes from the SAM
+  * `vol -f memdump.mem windows.cachedump`: cached domain credentials
+  * `vol -f memdump.mem windows.registry.hivelist`: registry hives in memory
+  * `vol -f memdump.mem timeliner.Timeliner`: timeline of events from all supported plugins
+  * `vol -f memdump.mem yarascan.YaraScan --yara-file rules.yar`: scan memory with YARA rules
+* Examples
+  * Find svchost processes: `vol -f memdump1.mem windows.pslist | grep -i "svchost.exe"`
+  * Count svchost processes: `vol -f memdump1.mem windows.pslist | grep -ic "svchost.exe"`
+  * Find PowerShell or cmd processes in the tree: `vol -f memdump1.mem windows.pstree | grep -i "powershell\|cmd"`
+* Volatility 2 Comparison
+  * Volatility 2 needs a profile for every command: identify it with `imageinfo`, then pass it with `--profile=Win7SP1x64`
+  * Command format: `python vol.py -f memdump.mem --profile=Win7SP1x64 pslist`
+  * Plugin names map closely: `pslist` -> `windows.pslist`, `netscan` -> `windows.netscan`, `procdump` -> `windows.pslist --dump`, `imageinfo` -> `windows.info`
+  * Some Volatility 2 plugins, such as `iehistory`, `notepad`, `screenshot`, and `clipboard`, have no direct Volatility 3 equivalent
 * Resources
-  * [Volatility Reference Guide](https://github.com/volatilityfoundation/volatility/wiki/Command-Reference)
-  * [Volatility Downloads](https://www.volatilityfoundation.org/releases)
-  * [Volatility Installation](https://github.com/volatilityfoundation/volatility/wiki/Installation)
-  * [Volatility Wiki](https://github.com/volatilityfoundation/volatility/wiki)
-  * [Volatility Documentation](https://volatility3.readthedocs.io/en/latest/)
-  * [Volatility GitHub](https://github.com/volatilityfoundation/volatility/wiki/Installation)
+  * [Volatility 3 Documentation](https://volatility3.readthedocs.io/en/latest/)
+  * [Volatility 3 GitHub](https://github.com/volatilityfoundation/volatility3)
+  * [Volatility Foundation](https://volatilityfoundation.org/)
   * [Memory Samples for Test Analysis](https://github.com/volatilityfoundation/volatility/wiki/Memory-Samples)
-  * [Volatility Cheat Sheet](https://book.hacktricks.xyz/generic-methodologies-and-resources/basic-forensic-methodology/memory-dump-analysis/volatility-examples)
-  * [Another Volatility3 v Volatility2 Cheat Sheet](https://blog.onfvp.com/post/volatility-cheatsheet/)
-  * [Volatility Tutorial](https://medium.com/@zemelusa/first-steps-to-volatile-memory-analysis-dcbd4d2d56a1)
-
-cd volatility3 -> python3 ./vol.py
+  * [Volatility 2 Command Reference](https://github.com/volatilityfoundation/volatility/wiki/Command-Reference)
+  * [Volatility 3 vs Volatility 2 Cheat Sheet](https://blog.onfvp.com/post/volatility-cheatsheet/)
+  * [Volatility Examples (HackTricks)](https://book.hacktricks.xyz/generic-methodologies-and-resources/basic-forensic-methodology/memory-dump-analysis/volatility-examples)

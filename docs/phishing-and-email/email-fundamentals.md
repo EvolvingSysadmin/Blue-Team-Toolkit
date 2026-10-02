@@ -1,51 +1,55 @@
-# Basic Email Info
+# Email Fundamentals
 
 * Email Protocols
-  * Simple Mail Transfer Protocol (SMTP): Port 25 by default, Port 587 for TLS
-  * Post Office Protocol 3 (POP3): Port 110 by default, Port 995 for TLS
-  * Internet Mail Access Protocol (IMAP): Port 143 by default, Port 993 for TLS
-* Email Security Measures
-  * Sender Policy Framework (SPF): a type of DNS (TXT) record that can help prevent an email address from being forged by sending alerts
-  * Domain Keys Identified Mail (DKIM): cryptographically verifies if an email has been sent by its trusted servers and wasn't tampered during transmission
-  * Domain-based Message Authentication, Reporting and Conformance (DMARC): email authentication, policy and reporting protocol that specifies what happens upon SPF and DKIM failure
+  * Simple Mail Transfer Protocol (SMTP): port 25 for server-to-server relay; port 587 for client submission with STARTTLS; port 465 for submission over implicit TLS
+  * Post Office Protocol 3 (POP3): port 110, or 995 for POP3 over TLS
+  * Internet Message Access Protocol (IMAP): port 143, or 993 for IMAP over TLS
+* Email Authentication
+  * Sender Policy Framework (SPF): a DNS TXT record listing the servers allowed to send mail for a domain; receivers check the connecting server's IP against it
+  * DomainKeys Identified Mail (DKIM): the sending server signs the message; receivers verify the signature with a public key published in DNS, proving the message was not altered and was sent by a server holding the domain's key
+  * Domain-based Message Authentication, Reporting and Conformance (DMARC): a DNS policy that tells receivers what to do when SPF and DKIM fail or do not align with the From domain (`none`, `quarantine`, `reject`) and where to send reports
 * Types of Malicious Emails
-  * Spam Recon Emails: identifying if email error codes are sent back
-  * Social Engineering Recon Emails: attempting to get response
-  * Tracking Pixel Recon Emails: see if the email has been viewed by an email client (track OS, email website, client, screen resolution, date/time of read, IP address)
-  * Spam email
-  * Links to credential harvesters, domains with typo squatting, shortened urls
-* Email Spoofing
-  * From address may look legitimate but whois lookup of X-Originating-IP shows different organization
-  * Reply-To address may be different than sender address
-  * HTML styling
-* Common Email Artifacts
-  * Sending Address
-  * Subject Line
+  * Spam recon emails: checking whether an address is valid based on bounces and error codes
+  * Social engineering recon emails: trying to get a response
+  * Tracking pixel recon emails: confirming the email was opened (can reveal OS, email client, IP address, and time opened)
+  * Spam
+  * Credential harvesting: links to fake login pages, typosquatted domains, shortened URLs, QR codes
+  * Malware delivery: malicious attachments or links to download them
+  * Business email compromise (BEC): impersonation of executives or vendors to redirect payments or obtain data, often with no link or attachment
+* Email Spoofing Indicators
+  * Display name or From address looks legitimate, but the sending IP or X-Originating-IP belongs to an unrelated organization
+  * Reply-To address differs from the From address
+  * SPF, DKIM, or DMARC failures in the Authentication-Results header
+  * Lookalike domains (for example `rn` in place of `m`)
+  * HTML styling that copies a known brand
+* Common Email Artifacts to Collect
+  * Sending address
+  * Subject line
   * Recipient(s)
-  * Date and Time
-  * Sending Server IP
-  * Reverse DNS of Sending Server IP
+  * Date and time
+  * Sending server IP
+  * Reverse DNS of sending server IP
   * Reply-To (if present)
-  * Links/a hrefs (IP and root domain of those links)
-  * File Attachment name
-  * File attachment SHA256 HASH
-* Common Malicious Email Attachment File Types
-  * .exe (Executable)
-  * .vbs (Visual Basic Script)
-  * .js (JavaScript)
-  * .iso (Optical Disk Image)
-  * .bat (Windows Batch File)
-  * .ps/.ps1 (PowerShell Scripts)
-  * .htm/.html (Web Pages / Hypertext Markup Language)
-* Email anslysis resources
-  * Domain/IP Lookup: <https://whois.domaintools.com/>
-  * Domain Registration Lookup: <https://lookup.icann.org/en>
-  * URL Analysis: <https://urlhaus.abuse.ch/>
-  * Show root HTTP Response: <https://www.wannabrowser.net/>
-  * Reverse IP Lookup: <https://mxtoolbox.com/ReverseLookup.aspx>
-  * IP Geolocation: <https://www.iplocation.net/>
-  * URL Sandbox: <https://urlscan.io/>
-  * Track reported phishing data: <https://phishtank.org/>
-  * Virustotal Malware Analysis: <https://www.virustotal.com/gui/home/upload>
-  * Talos Malware Analysis: <https://talosintelligence.com/talos_file_reputation>
-  * Hybrid Analysis Malware Analysis: <https://www.hybrid-analysis.com/>
+  * URLs in the message (full URL, IP, and root domain)
+  * Attachment file name
+  * Attachment SHA256 hash
+* Common Malicious Attachment Types
+  * Executables and scripts: .exe, .scr, .vbs, .js, .bat, .ps1, .hta
+  * Shortcuts: .lnk
+  * Containers used to bypass Mark of the Web: .iso, .img, .zip, .rar, .7z
+  * Office files with macros: .docm, .xlsm, and older .doc and .xls
+  * OneNote files: .one
+  * HTML and SVG files, often used for HTML smuggling or credential phishing pages
+  * PDF files with embedded links or QR codes
+* Email Analysis Resources
+  * Domain/IP lookup: <https://whois.domaintools.com/>
+  * Domain registration lookup: <https://lookup.icann.org/en>
+  * URL analysis: <https://urlhaus.abuse.ch/>
+  * Show raw HTTP response: <https://www.wannabrowser.net/>
+  * Reverse IP lookup: <https://mxtoolbox.com/ReverseLookup.aspx>
+  * IP geolocation: <https://www.iplocation.net/>
+  * URL sandbox: <https://urlscan.io/>
+  * Reported phishing data: <https://phishtank.org/>
+  * VirusTotal: <https://www.virustotal.com/gui/home/upload>
+  * Talos file reputation: <https://talosintelligence.com/talos_file_reputation>
+  * Hybrid Analysis: <https://www.hybrid-analysis.com/>

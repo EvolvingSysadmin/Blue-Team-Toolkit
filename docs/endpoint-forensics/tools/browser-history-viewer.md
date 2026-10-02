@@ -1,5 +1,5 @@
-# Browser History Capturer
+# Browser History Viewer
 
-* Description: can be used in conjunction with Browser History Viewer to obtain browser artifacts
-* Installation: download program from <https://www.foxtonforensics.com/browser-history-capturer/>
-* Usage: select user profile -> select browsers -> select data -> select output directory -> capture -> use Browser History Viewer to analyze
+* Description: displays browser history, cached pages and images, and other browser artifacts
+* Installation: download from <https://www.foxtonforensics.com/browser-history-viewer/>
+* Usage: File -> Load History, then select the output directory from [Browser History Capturer](browser-history-capturer.md)

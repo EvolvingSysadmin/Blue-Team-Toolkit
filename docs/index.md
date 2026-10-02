@@ -1,9 +1,20 @@
-# 👊 Welcome!
+# Blue Team Toolkit
 
-Note: this repo is extremely out of date and will be updated later this year
+The Blue Team Toolkit is a field reference for defensive security work: incident response, log analysis, phishing analysis, network analysis, endpoint forensics, malware triage, and hardening. It is maintained by [@EvolvingSysadmin](https://github.com/EvolvingSysadmin).
 
-The Blue Team Toolkit provides tools and techniques for Digital Forensics and Incident Response. The Blue Team Toolkit was created by [@EvolvingSysadmin](https://github.com/evolvingsysadmin). The information is gathered primarily from courses such as those from [Security Blue Team](https://securityblue.team/).
+The content comes from hands-on work as a security administrator, lab work, and training including Security Blue Team's BTL1.
 
-In addition to [GitHub](https://github.com/EvolvingSysadmin/Blue-Team-Toolkit), the Blue Team Toolkit can be viewed as a [GitBook](https://evolvingsysadmin.gitbook.io/blue-team-toolkit).
+## Sections
 
-![Happy Defending!](.gitbook/assets/logo.png)
+* [Incident Response](incident-response/index.md): lifecycle, preparation, containment, and post-incident work
+* [Threat Intelligence](threat-intelligence/index.md): MITRE ATT&CK and adversary behavior
+* [SIEM and Log Analysis](siem-and-log-analysis/index.md): Windows, Linux, web server, and network device logs; Splunk, Sysmon, DeepBlueCLI
+* [Phishing and Email](phishing-and-email/index.md): email protocols, authentication, and header analysis
+* [Network Analysis](network-analysis/index.md): Wireshark, Nmap, common ports, and network commands
+* [Endpoint Forensics](endpoint-forensics/index.md): evidence handling, Windows and Linux artifacts, and forensic tools
+* [Malware Analysis](malware-analysis/index.md): YARA
+* [Hardening](hardening/index.md): Active Directory
+
+The source is on [GitHub](https://github.com/EvolvingSysadmin/Blue-Team-Toolkit).
+
+![Happy Defending!](assets/logo.png)

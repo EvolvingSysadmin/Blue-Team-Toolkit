@@ -1,17 +1,21 @@
 # Steghide
 
-* Description: used to hide and retrieve files, files can be easily hidden using steganography by running something like `cat Dog.jpg secretmessage.zip > Dog2.jpg` which hides the zip inside the jpg file
-* Installation: `sudo apt-get install steghide`
+* Description: hides data inside JPEG, BMP, WAV, and AU files using steganography, and extracts it with the passphrase
+* Installation: `sudo apt install steghide`
 * Usage
-  * To hide secretmessage.txt inside dog.jpg: `steghide embed -cf dog.jpg -ef secretmessage.txt`
-    * `embed`: specifies operation
-    * `-cf dog.jpg`: cover file using dog.jpg
-    * `-ef secretmessage.txt`: embedded file using secretmessage.txt
-  * To extract hidden file: `steghide extract -sf dog.jpg`
-    * `extract`: specifies operation
-    * `-sf dog.jpg`: steganogrphy flag to specify file with potentially hidden data
+  * Hide secretmessage.txt inside dog.jpg: `steghide embed -cf dog.jpg -ef secretmessage.txt`
+    * `embed`: specifies the operation
+    * `-cf dog.jpg`: cover file
+    * `-ef secretmessage.txt`: file to embed
+  * Check whether a file contains embedded data: `steghide info dog.jpg`
+  * Extract a hidden file: `steghide extract -sf dog.jpg`
+    * `extract`: specifies the operation
+    * `-sf dog.jpg`: stego file that may contain hidden data
+* Related techniques
+  * Appending a file to another, for example `cat Dog.jpg secretmessage.zip > Dog2.jpg`, hides a zip after the end of the image; the image still opens normally. Detect with `binwalk Dog2.jpg` and extract with `binwalk -e Dog2.jpg`
+  * Stegseek can brute force steghide passphrases with a wordlist
 * Resources
   * [Steghide Website](https://steghide.sourceforge.net/)
-  * [Steghide Download](https://steghide.sourceforge.net/download.php)
   * [Steghide Manual](https://steghide.sourceforge.net/documentation/manpage.php)
   * [Steghide Tutorial](https://linuxhint.com/steghide-beginners-tutorial/)
+  * [Stegseek](https://github.com/RickdeJager/stegseek)

@@ -1,31 +1,36 @@
-# Digital Evidence Handling
+# Evidence Handling
 
 * Digital Evidence Process: Identification -> Preservation -> Collection -> Analysis -> Reporting
-* Forms of Digital Evidence:
+* Forms of Digital Evidence
   * Email
-  * Digital Photographs
+  * Digital photographs
   * Logs
   * Documents
   * Messages
   * Files
-  * Browser History
+  * Browser history
   * Databases
   * Backups
-  * Disk Images
+  * Disk images
+  * Memory images
   * Video/audio files
-* Digital evidence handling tenants:
-  * No altering of original evidence
-  * Use write-blockers
-  * Document the process
-* Order of Volatility: olatile data includes running memory or the Address Resolution Protocol (ARP) cache
-  * Registers & Cache: CPU cache contents
-  * Memory: RAM contents
-  * Disk (HDD and SSD)
-  * Remote Logging and Monitoring Data
-  * Physical Configuration, Network Topology, Archival Media
-* Follow chain of custody by:
-  * Using Evidence Integrity Hashing
-  * Taking a Forensic Copy
-  * Storing Digital Evidence securely
-  * Using Chain of Custody Form
-  
+* Evidence Handling Tenets
+  * Do not alter original evidence; work from verified copies
+  * Use write-blockers when imaging storage media
+  * Document every step: who, what, when, where, and how
+* Order of Volatility (RFC 3227): collect the most volatile data first
+  * CPU registers and cache
+  * Routing table, ARP cache, process table, kernel statistics, memory
+  * Temporary file systems
+  * Disk
+  * Remote logging and monitoring data
+  * Physical configuration and network topology
+  * Archival media
+* Chain of Custody
+  * Hash evidence at collection and verify the hash before analysis
+  * Take a forensic copy and analyze the copy
+  * Store evidence securely with controlled access
+  * Record every transfer on a chain of custody form
+* Resources
+  * [RFC 3227: Guidelines for Evidence Collection and Archiving](https://datatracker.ietf.org/doc/html/rfc3227)
+  * [NIST SP 800-86: Guide to Integrating Forensic Techniques into Incident Response](https://csrc.nist.gov/pubs/sp/800/86/final)

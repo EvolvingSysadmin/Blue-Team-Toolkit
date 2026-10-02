@@ -1,20 +1,20 @@
 # Scalpel
 
-* Description: used to retrieve deleted files from .img files by using file carving
-* Linux installation: `sudo apt-get install scalpel`
+* Description: recovers deleted files from disk images by file carving (searching for known file headers and footers)
+* Linux installation: `sudo apt install scalpel`
 * Usage
-  * Edit scalpel.conf to uncomment the type of files hoping to get from an .img file by doing one of the following
-    * Manually edit the file by using the GUI to navigate to:  `/etc/scalpel/scalpel.conf` and uncomment relevent file types
-    * Use vim or nano `sudo nano /etc/scalpel/scalpel.conf` and uncomment relevent file types
-    * Create a copy of the `/etc/scalpel/scalpel.conf`, uncomment relevent file types, and then specify that file when using scalpel by using: `scalpel -c /path/to/new/conf.conf`
+  * Edit scalpel.conf and uncomment the file types to recover, by one of these methods:
+    * Edit `/etc/scalpel/scalpel.conf` directly: `sudo nano /etc/scalpel/scalpel.conf`
+    * Copy `/etc/scalpel/scalpel.conf`, edit the copy, and pass it with `-c /path/to/new.conf`
   * Create an empty output directory
-  * Run command: `scalpel -b -o /empty/output/directory DiskImage.img`
+  * Run: `scalpel -b -o /empty/output/directory DiskImage.img`
     * Example: `scalpel -b -o /root/Desktop/ScalpelOutput DiskImage1.img`
-  * Note: scalpel can be configured to search for document types with custom headers and footers by editing the configuration file:
-    * Example for files with "BTL1" header and "1LTB" footer: create a new line on the .conf file with `txt y 10000 BTL1 1LTB`
-    * To show strings from a recovered file: `strings path\to\txt`
+  * Custom file types can be added to the config with a header and footer
+    * Example for text files with the header "BTL1" and footer "1LTB": add the line `txt y 10000 BTL1 1LTB`
+    * Show strings from a recovered file: `strings /path/to/recovered/file`
+* Scalpel is no longer actively developed; Foremost and PhotoRec are common alternatives
 * Resources
-* [https://linux.die.net/man/1/scalpel](Scalpel Man Page)
+  * [Scalpel Man Page](https://linux.die.net/man/1/scalpel)
   * [Kali Tool Description](https://www.kali.org/tools/scalpel/)
   * [Scalpel Guide](https://www.tecmint.com/install-scalpel-a-filesystem-recovery-tool-to-recover-deleted-filesfolders-in-linux/)
-  
+  * [PhotoRec](https://www.cgsecurity.org/wiki/PhotoRec)

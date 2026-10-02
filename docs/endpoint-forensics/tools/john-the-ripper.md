@@ -1,11 +1,12 @@
 # John the Ripper
 
-* Description: used to crack password hashes, including passwords from the passwd and shadow files in Linux
-* Installation: `sudo apt-get install john`
+* Description: password hash cracker; used in investigations to recover passwords from hashes and protected files (for example with the `zip2john` and `office2john` helpers), and to test password strength
+* Installation: `sudo apt install john` (the "jumbo" build bundled with Kali supports more hash formats and the `*2john` helpers)
 * Usage
   * Obtain Linux password hashes from shadow file: `cat /etc/shadow`
   * To combine passwd and shadow files: `unshadow passwd shadow > HashFile`
-  * To run using HashFile as input and rockyou.txt as word list with both files in current directory: `john HashFile --wordlist=rockyou.txt`
+  * Run against HashFile with the rockyou.txt wordlist: `john HashFile --wordlist=rockyou.txt`
+  * Show cracked passwords: `john --show HashFile`
 * Resources
   * [John the Ripper Usage Examples](https://www.openwall.com/john/doc/EXAMPLES.shtml)
   * [John the Ripper Tutorial](https://www.varonis.com/blog/john-the-ripper)

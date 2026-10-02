@@ -1,10 +1,10 @@
 # Log Review Approach
 
-* Description: critical log review checklist developed by Dr. Anton Chuvakin and Lenny Zeltser
+* Description: approach based on the Critical Log Review Checklist for Security Incidents by Dr. Anton Chuvakin and Lenny Zeltser
 * General Approach
   * Identify which log sources and automated tools
   * Copy log records to a single location
-  * Minimize “noise” by removing routine, repetitive log entries
+  * Minimize """noise""" by removing routine, repetitive log entries
   * Determine whether you can rely on logs' time stamps; consider time zone differences (data normalization)
   * Focus on recent changes, failures, errors, status changes, access and administration events, and other unusual events
   * Go backwards in time from now to reconstruct actions after and before the incident
@@ -20,7 +20,6 @@
   * Linux OS and core applications: /var/log
   * Windows OS and core applications: Windows Event Log (Security, System, Application)
   * Network devices: usually logged via Syslog; some use proprietary locations and formats
-* Resouces
+* Resources
   * [Critical Log Review Checklist for Security Incidents](https://zeltser.com/security-incident-log-review-checklist/)
-  * [Critical Log Review Checklist for Security Incidents PDF](https://github.com/EvolvingSysadmin/Blue-Team-Toolkit/blob/main/assets/security-incident-log-review-checklist.pdf)
   * [Open Source Log Analysis Tools](http://www.securitywarriorconsulting.com/logtools/)

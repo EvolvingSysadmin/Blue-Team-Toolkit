@@ -1,11 +1,12 @@
 # FTK Imager
 
-* Description: tool for dumping memory to a .mem file, taking disk images, exporting files from disk images, generating MD5/SHA1 hashes for evidence, provides read only view of contents of disk image
-* Installation: can be downloaded from <https://accessdata.com/product-download-page>
+* Description: free imaging tool for capturing memory, creating disk images (raw/dd and E01), exporting files from images, and hashing evidence; gives a read-only view of image contents
+* Installation: download from <https://www.exterro.com/digital-forensics-software/ftk-imager>
 * Usage
-  * To capture memory and save it to a .mem file: File -> Capture Memory
-  * To create a .img file : File -> Create Disk Image
-  * To inspect a disk image file: Add Evidence -> Image File
+  * Capture memory to a .mem file: File -> Capture Memory
+  * Create a disk image: File -> Create Disk Image -> select source -> select format (Raw or E01) -> add case details -> start
+  * Verify an image: File -> Verify Drive/Image (compares MD5 and SHA1 hashes)
+  * Inspect an image: File -> Add Evidence Item -> Image File
+  * Mount an image read-only: File -> Image Mounting
 * Resources
   * [Comprehensive Guide on FTK Imager](https://www.hackingarticles.in/comprehensive-guide-on-ftk-imager/)
-  

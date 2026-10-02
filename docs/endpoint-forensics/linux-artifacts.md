@@ -1,36 +1,43 @@
 # Linux Artifacts
 
-* Password Hashes
-  * Passwd file: `/etc/passwd` file is used to keep track of every registered user that has access to a system
-  * Shadow file: `/etc/shadow` file contains encrypted passwords as well as other information such as account or password expiration values
-    * To show shadow file content: `sudo cat /etc/shadow`
+* Accounts and Password Hashes
+  * `/etc/passwd`: every account on the system, with UID, home directory, and shell
+  * `/etc/shadow`: password hashes and password aging information; readable only by root
+    * Show contents: `sudo cat /etc/shadow`
+  * `/etc/group` and `/etc/sudoers` (plus `/etc/sudoers.d/`): group membership and sudo rights
 * Installed Software
-  * Find installed software on Debian based systems by checking the status file: `/var/lib/dpkg/status`
-  * Save all lines that contain package in `/var/lib/dpkg/status` to packages.txt: `cat status | grep Package > packages.txt`
+  * Debian-based systems: `/var/lib/dpkg/status` or `dpkg -l`
+  * Save all package names to a file: `grep Package /var/lib/dpkg/status > packages.txt`
+  * RHEL-based systems: `rpm -qa`
 * System Logs
-  * `/var/log/auth.log`: system authorizations, including user logins
-  * `/var/log/dpkg.log`: packages installed or removed using the `dpkg` command
-  * `/var/log/btmp`: failed login attempts
-  * `/var/log/cron`: cron jobs
-  * `/var/log/secure`: authentication and authorization privileges (eg related to SSH)
-  * `/var/log/faillog`: failedf user logins
-  * To search linux logs for a specific program/malware: `/var/log$ grep -iRl {keyword}`
-* Web Server Logs for Apache and Nginx
-  * `var/log/apache2/access.log`: shows web server info in Apache, including:
+  * `/var/log/auth.log` (Debian/Ubuntu) or `/var/log/secure` (RHEL): authentication, sudo, and SSH activity
+  * `/var/log/syslog` (Debian/Ubuntu) or `/var/log/messages` (RHEL): general system messages
+  * `/var/log/dpkg.log`: packages installed or removed with `dpkg`/`apt`
+  * `/var/log/wtmp`: logins and logouts, read with `last`
+  * `/var/log/btmp`: failed logins, read with `lastb`
+  * `/var/log/lastlog`: last login per user, read with `lastlog`
+  * `/var/log/faillog`: failed login counters, read with `faillog`
+  * `/var/log/cron` (RHEL) or cron entries in syslog (Debian/Ubuntu): cron job activity
+  * systemd journal: `journalctl`
+  * Search logs for a keyword (program name, malware name, IP): `grep -iRl "keyword" /var/log`
+* Web Server Logs
+  * `/var/log/apache2/access.log` or `/var/log/nginx/access.log`, including:
     * Client IP
     * Resource accessed
     * HTTP method
-    * User-Agent of client IP
-    * Request timestamps
+    * User-Agent
+    * Request timestamp
+  * More detail: [Web Server Logs](../siem-and-log-analysis/web-server-logs.md)
 * User Files
-  * Bash History
-    * `cd ~`
-    * `ls -a`
-    * `cat .bash_history`
-    * `history` can also be used, but `history -c` can be used to delete terminal history
-  * Clear Files
-    * Desktop, Downloads, Music, Pictures, Public, Templates, Videos
-    * Trash Bin
-  * Super user startup scripts: `/etc/rc.local`
-  * To show listening network connections: `netstat -tulnp`
-  
+  * Bash history: `cat ~/.bash_history` (and for root: `sudo cat /root/.bash_history`)
+    * `history` shows the current shell's history; `history -c` clears it, so a missing or empty history file can itself be suspicious
+  * User directories: Desktop, Downloads, Documents, and the trash at `~/.local/share/Trash`
+  * Shell startup files that can be used for persistence: `~/.bashrc`, `~/.profile`
+  * SSH keys: `~/.ssh/authorized_keys`
+* Persistence Locations
+  * Cron: `/etc/crontab`, `/etc/cron.*`, `/var/spool/cron/`, and `crontab -l` for each user
+  * systemd services and timers: `/etc/systemd/system/`, `systemctl list-timers`
+  * Legacy startup script: `/etc/rc.local`
+* Network
+  * Listening ports with processes: `ss -tulnp` (or `netstat -tulnp` on older systems)
+  * Established connections: `ss -tunap`

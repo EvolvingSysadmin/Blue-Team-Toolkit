@@ -1,16 +1,14 @@
-# Exiftool
+# ExifTool
 
-* Description: used to get file metadata, can be used to extract strings from metadata
-* Linux Installation: `sudo apt-get install exiftool`
-* Windows Installation: download from <https://exiftool.org/>
+* Description: reads and writes file metadata (EXIF, XMP, IPTC, and more); useful for finding authors, software, GPS coordinates, timestamps, and strings hidden in metadata
+* Linux installation: `sudo apt install libimage-exiftool-perl`
+* Windows installation: download from <https://exiftool.org/>
 * Usage
-  * To retrieve file metadata: `exiftool <filename>`
-  * To embed "sneaky!" into dpg.jpg: `exiftool -Comment="sneaky!" dog.jpg` -> this creates file with embedded text called `dog.jpg_original`
+  * Show file metadata: `exiftool <filename>`
+  * Show metadata for every file in a directory: `exiftool -r <directory>`
+  * Add the comment "sneaky!" to dog.jpg: `exiftool -Comment="sneaky!" dog.jpg`
+    * ExifTool writes the change to `dog.jpg` and keeps the unmodified file as `dog.jpg_original`
 * Resources
   * [ExifTool FAQ](https://exiftool.org/faq.html)
-  * [Exiftool Installation](https://exiftool.org/install.html)
-  * [Exiftool Linux Man Page](https://linux.die.net/man/1/exiftool)
-  * [Online Exiftool](https://exif.tools/)
-  * [Another Online Exiftool](http://exif-viewer.com/)
-  * [Exporting DData from TCP Stream](https://medium.com/@sshekhar01/cyberdefenders-packetmaze-beffc1d05cb)
-  
+  * [ExifTool Installation](https://exiftool.org/install.html)
+  * [ExifTool Documentation](https://exiftool.org/exiftool_pod.html)

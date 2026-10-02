@@ -1,75 +1,80 @@
 # Windows Artifacts
 
-* LNK file analysis: LNK files are used by the Windows OS to link one file to another
-  * LNK files can be found at: `C:\Users\$USER$\AppData\Roaming\Microsoft\Windows\Recent`
-  * Windows File Analyzer can analyze these LNK files
-* Prefetch files: useful information about programs including the name of the application, the path to the executable file, when the program was last run, and when the program was created/installed
-  * Prefetch files are located at: `C:\Windows\Prefetch`
-  * Prefetch Explorer Command Line (PECmd.exe) can be used to view these files
-* Jump list: jump lists enable identification of filetypes automaticDestination-ms and customDestination-ms which show application pinned to the taskbar
-  * Located here: `C:\Users\% USERNAME%\AppData\Roaming\Microsoft\Windows\Recent\AutomaticDestinations` and `C:\Users\%USERNAME%\AppData\ Roaming\Microsoft\Windows\Recent\CustomDestinations`
-  * Use JumpList Explorer: <https://www.sans.org/tools/jumplist-explorer/>
+* LNK files: shortcut files Windows creates when a user opens a file; they record the target path, timestamps, and volume information even after the target is deleted
+  * Location: `C:\Users\<username>\AppData\Roaming\Microsoft\Windows\Recent`
+  * Tools: [Windows File Analyzer](tools/windows-file-analyzer.md), LECmd (Eric Zimmerman)
+* Prefetch files: created when an application runs; record the executable name and path, run count, last run times (up to eight on Windows 8 and later), and files and directories loaded
+  * Location: `C:\Windows\Prefetch`
+  * Prefetch is enabled by default on Windows client versions and usually disabled on Windows Server
+  * Tool: [PECmd](tools/pecmd.md)
+* Jump lists: per-application lists of recently and frequently opened files, stored as AutomaticDestinations-ms and CustomDestinations-ms files
+  * Locations
+    * `C:\Users\<username>\AppData\Roaming\Microsoft\Windows\Recent\AutomaticDestinations`
+    * `C:\Users\<username>\AppData\Roaming\Microsoft\Windows\Recent\CustomDestinations`
+  * Tool: [JumpList Explorer](tools/jumplist-explorer.md)
 * Browsers
   * Artifacts
     * Cookies
-      * Favorites
-      * Downloaded Files
-      * URLs Visited
-      * Searches
-      * Cached Webpage
-      * Cached Images
-    * Tools for collecting artifacts
-      * KAPE
-      * Browser History Viewer
-      * Browser History Capturer
+    * Favorites/bookmarks
+    * Downloaded files
+    * URLs visited
+    * Searches
+    * Cached pages and images
+  * Tools for collecting artifacts
+    * [KAPE](tools/kape.md)
+    * [Browser History Capturer](tools/browser-history-capturer.md)
+    * [Browser History Viewer](tools/browser-history-viewer.md)
 * Logon Events
-  * Log artifacts
-    * Event ID 4624 (Successful Logon)
-    * ID 4672 (Special Logon): privileged user login
-    * ID 4625 (Failed Logon)
-    * ID 4634 (Logoff)
-    * RDP usage: Type 3 logon
-  * Artifact Location
-    * `C:\Windows\System32\winevt\Logs`
-    * Stored in the \Security folder
-* Directories to analyze for anamolous behavior
+  * Event IDs
+    * 4624: successful logon
+    * 4625: failed logon
+    * 4634: logoff
+    * 4672: special privileges assigned (privileged account logon)
+    * RDP logons: 4624 with logon type 10 (RemoteInteractive); also see the `Microsoft-Windows-TerminalServices-*` logs
+  * Location: `C:\Windows\System32\winevt\Logs\Security.evtx`
+  * More event IDs: [Windows Event Logs](../siem-and-log-analysis/windows-event-logs.md)
+* Locations to check for anomalous files
   * Recycle Bin
-  * /tmp/
-  * /Downloads
-* Artifacts obtained through CMD
-  * Tasks: `tasklist`
-  * Ouput tasks to txt: `tasklist > tasklist.txt`
-  * All running processes and associated binary files: `wmic process get description, executablepath`
+  * `%TEMP%` (`C:\Users\<username>\AppData\Local\Temp`)
+  * `C:\Users\<username>\Downloads`
+  * `C:\Users\<username>\AppData` and `C:\ProgramData`
+* Artifacts from CMD
+  * Running tasks: `tasklist`
+  * Running tasks with services: `tasklist /svc`
+  * Output to text: `tasklist > tasklist.txt`
   * Users: `net user`
-  * Users in administrators group: `net localgroup administrators`
-  * All groups: `net localgroup`
-  * Users in group: `net localgroup GROUP_NAME`
-  * Services detailed information: `sc query | more`
-  * Open ports: `netstat -ab`
-* Artifacts obtained through PowerShell
-  * Network Information: `Get-NetIPConfiguration` or `Get-NetIPAddress`
+  * Users in the Administrators group: `net localgroup administrators`
+  * All local groups: `net localgroup`
+  * Users in a group: `net localgroup GROUP_NAME`
+  * Services: `sc query | more`
+  * Open ports with executables (requires administrator): `netstat -abno`
+  * Note: `wmic` is deprecated and removed from current Windows 11 releases; use PowerShell instead
+* Artifacts from PowerShell
+  * Network information: `Get-NetIPConfiguration` or `Get-NetIPAddress`
+  * Running processes with executable paths: `Get-Process | Select-Object Name, Id, Path`
+  * Process command lines: `Get-CimInstance Win32_Process | Select-Object ProcessId, ParentProcessId, Name, CommandLine`
   * Local users: `Get-LocalUser`
-  * Information about local user: `Get-LocalUser -Name JohnDoe | select *`
-  * Identify running services on the system: `Get-Service | Where Status -eq "Running" | Out-GridView`
-  * Identify priority value of processes: `Get-Process | Format-Table View priority`
-  * Info of specifiy services: `Get-Process -Id 'idhere' | Select *` can also use `-Name flag`
+  * Details on a local user: `Get-LocalUser -Name JohnDoe | Select-Object *`
+  * Running services: `Get-Service | Where-Object Status -eq "Running"`
+  * Process priority: `Get-Process | Format-Table -View Priority`
+  * Details on a process: `Get-Process -Id 1234 | Select-Object *` (or use `-Name`)
+  * Find a process by name: `Get-Process | Where-Object Name -like "*calc*"`
   * Scheduled tasks: `Get-ScheduledTask`
-  * Scheduled tasks in ready state: `Get-ScheduledTask | Where State -eq "Ready"`
-  * Specific scheduled task: `Get-ScheduledTask -TaskName 'NAME' | Select *`
-* Artifacts from recycle bin
-  * Location:
-    * Windows 10: C:\$Recycle.Bin
-    * XP or older: C:\Recycler
-  * To display hidden files: `dir/a` or `Get-ChildItem -Hidden`
+  * Scheduled tasks in the Ready state: `Get-ScheduledTask | Where-Object State -eq "Ready"`
+  * Details on a scheduled task: `Get-ScheduledTask -TaskName 'NAME' | Select-Object *`
+  * Network connections: `Get-NetTCPConnection -State Established`
+* Recycle Bin
+  * Location
+    * Windows Vista and later: `C:\$Recycle.Bin\<SID>`
+    * Windows XP and earlier: `C:\RECYCLER`
+  * Each deleted file creates a `$I` file (original path, size, deletion time) and a `$R` file (the contents)
+  * Show hidden files: `dir /a` or `Get-ChildItem -Force`
   * Reference: <https://df-stream.com/2016/04/fun-with-recycle-bin-i-files-windows-10/>
 * Processes
+  * Know the normal parent-child relationships of core Windows processes so outliers stand out
   * Reference: <https://www.socinvestigation.com/important-windows-processes-for-threat-hunting/>
-  * To search for strings within an exe by using sysinternals strings: `strings -a file_name.exe > strings_from_file.exe`
-
-Windows Process Analysis
-
-* A parent PowerShell process spawning a child PowerShell process can be indicative of a malicious script
-
-PowerShell: `Get-Processes` | findstr -I calc
-PowerShell: `Get-Processes | findstr -I calc`
-Procdump: `.procdump.exe -ma PID_Number`
+  * Examples of suspicious parent-child relationships
+    * Office applications spawning `cmd.exe` or `powershell.exe`
+    * PowerShell spawning another PowerShell process with an encoded command
+  * Extract strings from an executable with Sysinternals Strings: `strings -a file_name.exe > strings_from_file.txt`
+  * Dump a process for analysis with Sysinternals ProcDump: `.\procdump.exe -ma <PID>`
