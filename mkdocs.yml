@@ -7,9 +7,6 @@ repo_name: EvolvingSysadmin/Blue-Team-Toolkit
 edit_uri: edit/main/docs/
 copyright: Copyright &copy; Ryan Heavican
 
-exclude_docs: |
-  SUMMARY.md
-
 theme:
   name: material
   logo: assets/icon.png
