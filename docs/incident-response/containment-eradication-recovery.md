@@ -48,12 +48,11 @@ For recovery, I would rather rebuild than clean. Reimaging a host or rebuilding 
 
 ## Related
 
-| Page | Relevance |
-| :--- | :--- |
-| [Ransomware](../playbooks/incident-response/ransomware.md) | Containment and recovery at the largest scale |
-| [Active Directory Privileged Compromise](../playbooks/incident-response/ad-privileged-compromise.md) | Coordinated eviction when the attacker has domain access |
-| [Memory Artifacts](../endpoint-forensics/memory-artifacts.md) | Capturing memory before containment changes the system |
-| [Detection and Analysis](detection-and-analysis.md) | The previous phase |
-| [Post-Incident Activity](post-incident-activity.md) | The next phase |
+* [Ransomware](../playbooks/incident-response/ransomware.md) playbook
+* [Active Directory Privileged Compromise](../playbooks/incident-response/ad-privileged-compromise.md) playbook
+* [Memory Artifacts](../endpoint-forensics/memory-artifacts.md)
+* [Detection and Analysis](detection-and-analysis.md), the previous phase; [Post-Incident Activity](post-incident-activity.md), the next
 
-**Resources:** [NIST SP 800-61 Rev. 3](https://csrc.nist.gov/pubs/sp/800/61/r3/final)
+## Resources
+
+* [NIST SP 800-61 Rev. 3](https://csrc.nist.gov/pubs/sp/800/61/r3/final)
