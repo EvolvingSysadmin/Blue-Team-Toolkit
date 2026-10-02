@@ -4,7 +4,7 @@
 * General Approach
   * Identify which log sources and automated tools
   * Copy log records to a single location
-  * Minimize """noise""" by removing routine, repetitive log entries
+  * Minimize "noise" by removing routine, repetitive log entries
   * Determine whether you can rely on logs' time stamps; consider time zone differences (data normalization)
   * Focus on recent changes, failures, errors, status changes, access and administration events, and other unusual events
   * Go backwards in time from now to reconstruct actions after and before the incident
