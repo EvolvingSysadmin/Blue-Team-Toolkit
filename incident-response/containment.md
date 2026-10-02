@@ -1,1 +1,0 @@
-# Containment, Eradication, and Recovery

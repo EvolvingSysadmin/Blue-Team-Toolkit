@@ -1,9 +1,16 @@
-# 👊 Welcome!
+# Blue Team Toolkit
 
-Note: this repo is extremely out of date and will be updated later this year
+The Blue Team Toolkit is a field reference for defensive security work: incident response, log analysis, phishing analysis, network analysis, endpoint forensics, malware triage, and hardening. It is maintained by [@EvolvingSysadmin](https://github.com/EvolvingSysadmin).
 
-The Blue Team Toolkit provides tools and techniques for Digital Forensics and Incident Response. The Blue Team Toolkit was created by [@EvolvingSysadmin](https://github.com/evolvingsysadmin). The information is gathered primarily from courses such as those from [Security Blue Team](https://securityblue.team/).
+Read it at [blueteam.ryanheavican.com](https://blueteam.ryanheavican.com) or browse the Markdown in [docs/](docs/index.md).
 
-In addition to [GitHub](https://github.com/EvolvingSysadmin/Blue-Team-Toolkit), the Blue Team Toolkit can be viewed as a [GitBook](http://evolvingsysadmin.gitbook.io/blue-team-toolkit).
+![Happy Defending!](docs/assets/logo.png)
 
-![Happy Defending!](assets/logo.png)
+## Build locally
+
+```
+pip install -r requirements.txt
+mkdocs serve
+```
+
+Then open <http://127.0.0.1:8000>.

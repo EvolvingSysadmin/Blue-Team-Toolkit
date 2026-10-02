@@ -8,4 +8,4 @@ site:
       path: blue-team-toolkit
       default: true
       content:
-        directory: ./blue-team-toolkit
+        directory: ./docs
