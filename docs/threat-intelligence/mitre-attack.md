@@ -1,148 +1,150 @@
 # MITRE ATT&CK Framework
 
+A knowledge base of adversary tactics (the goal) and techniques (how it is achieved), built from real-world observations.
+
+## Why It Matters
+
+ATT&CK gives defenders a shared vocabulary for attacker behavior. It is how I map what I see in an incident to what usually comes next, how I check which techniques my detections cover, and how hunts and playbooks stay focused on behavior attackers actually use.
+
+## Reference
+
+### Tactics
+
+| ID | Tactic | Attacker Goal |
+| :--- | :--- | :--- |
+| TA0043 | Reconnaissance | Gather information to plan the attack |
+| TA0042 | Resource Development | Set up infrastructure, accounts, and tools |
+| TA0001 | Initial Access | Get into the network |
+| TA0002 | Execution | Run malicious code |
+| TA0003 | Persistence | Keep access across restarts and credential changes |
+| TA0004 | Privilege Escalation | Gain higher permissions |
+| TA0005 | Defense Evasion | Avoid detection |
+| TA0006 | Credential Access | Steal account names and passwords |
+| TA0007 | Discovery | Learn the environment |
+| TA0008 | Lateral Movement | Move through the environment |
+| TA0009 | Collection | Gather data of interest |
+| TA0011 | Command and Control | Communicate with compromised systems |
+| TA0010 | Exfiltration | Steal data |
+| TA0040 | Impact | Disrupt, destroy, or manipulate systems and data |
+
+Techniques are added and revised in each ATT&CK release. The tables below cover common techniques, not the full matrix.
+
+### Initial Access
+
+| Technique | Notes |
+| :--- | :--- |
+| [T1566 Phishing](https://attack.mitre.org/techniques/T1566/) | Still the most common entry point; see the [Phishing](../playbooks/incident-response/phishing.md) playbook |
+| [T1190 Exploit Public-Facing Application](https://attack.mitre.org/techniques/T1190/) | VPNs, firewalls, and web applications; see [Exploited Edge Device](../playbooks/incident-response/edge-device-exploitation.md) |
+| [T1133 External Remote Services](https://attack.mitre.org/techniques/T1133/) | VPN, RDP, and Citrix with valid or stolen credentials |
+| [T1078 Valid Accounts](https://attack.mitre.org/techniques/T1078/) | Credentials from phishing, reuse, or purchase |
+| [T1189 Drive-by Compromise](https://attack.mitre.org/techniques/T1189/) | Malicious or compromised websites |
+| [T1195 Supply Chain Compromise](https://attack.mitre.org/techniques/T1195/) | Compromised software or updates |
+| [T1199 Trusted Relationship](https://attack.mitre.org/techniques/T1199/) | Access through an IT provider or partner |
+| [T1091 Replication Through Removable Media](https://attack.mitre.org/techniques/T1091/) | USB drives |
+| [T1200 Hardware Additions](https://attack.mitre.org/techniques/T1200/) | Rogue devices plugged into the network |
+| [T1659 Content Injection](https://attack.mitre.org/techniques/T1659/) | Malicious content injected into network traffic |
+
+### Execution
+
+| Technique | Notes |
+| :--- | :--- |
+| [T1059 Command and Scripting Interpreter](https://attack.mitre.org/techniques/T1059/) | PowerShell, cmd, bash, Python; see the [Suspicious PowerShell](../playbooks/alert-triage/suspicious-powershell.md) runbook |
+| [T1047 Windows Management Instrumentation](https://attack.mitre.org/techniques/T1047/) | Running commands locally and on remote hosts |
+| [T1204 User Execution](https://attack.mitre.org/techniques/T1204/) | A user opens a malicious file or link |
+
+### Persistence
+
+| Technique | Notes |
+| :--- | :--- |
+| [T1547 Boot or Logon Autostart Execution](https://attack.mitre.org/techniques/T1547/) | Run keys, Startup folder |
+| [T1053 Scheduled Task/Job](https://attack.mitre.org/techniques/T1053/) | See the [Persistence](../playbooks/threat-hunting/persistence.md) hunt |
+| [T1136 Create Account](https://attack.mitre.org/techniques/T1136/) | New local, domain, or cloud accounts |
+| [T1133 External Remote Services](https://attack.mitre.org/techniques/T1133/) | SSH, VPN, RDP gateways |
+
+### Privilege Escalation
+
+| Technique | Notes |
+| :--- | :--- |
+| [T1078 Valid Accounts](https://attack.mitre.org/techniques/T1078/) | Credentials for privileged accounts obtained through phishing or dumping |
+| [T1068 Exploitation for Privilege Escalation](https://attack.mitre.org/techniques/T1068/) | Unpatched local vulnerabilities |
+
+### Defense Evasion
+
+| Technique | Notes |
+| :--- | :--- |
+| [T1562 Impair Defenses](https://attack.mitre.org/techniques/T1562/) | Disabling or modifying security tools, Windows event logging, firewalls, and command history logging (for example `HISTCONTROL` on Linux) |
+| [T1070 Indicator Removal](https://attack.mitre.org/techniques/T1070/) | Clearing Windows event logs (Event ID 1102), clearing Linux logs and command history, deleting files, timestomping |
+
+### Credential Access
+
+| Technique | What to Look For | Mitigation |
+| :--- | :--- | :--- |
+| [T1003 OS Credential Dumping](https://attack.mitre.org/techniques/T1003/) | Process access to `lsass.exe` (Sysmon Event ID 10); reads of `/etc/shadow` (auditd) | Credential Guard, LSA protection, Protected Users, removing local admin rights |
+| [T1110 Brute Force](https://attack.mitre.org/techniques/T1110/) | Failed logons across many accounts or one account; see the [Password Spray](../playbooks/alert-triage/password-spray.md) runbook | MFA, lockout and smart lockout, strong passwords |
+| [T1558.003 Kerberoasting](https://attack.mitre.org/techniques/T1558/003/) | RC4 service tickets (4769, `0x17`); see the [Kerberoasting](../playbooks/threat-hunting/kerberoasting.md) hunt | gMSAs, long service account passwords, AES-only Kerberos |
+
+Offline cracking of stolen hashes uses tools like [Hashcat](https://hashcat.net/hashcat/) and [John the Ripper](../endpoint-forensics/tools/john-the-ripper.md).
+
+### Discovery
+
+| Technique | Common Commands | Notes |
+| :--- | :--- | :--- |
+| [T1087 Account Discovery](https://attack.mitre.org/techniques/T1087/) | `net user`, `net localgroup`, `net user /domain`, `net group "Domain Users" /domain` (Windows); `id`, `groups`, `cat /etc/passwd` (Linux); `dscacheutil -q group` (macOS); `ldapsearch` | Disabling "Enumerate administrator accounts on elevation" by Group Policy stops UAC prompts from listing admin accounts |
+| [T1046 Network Service Discovery](https://attack.mitre.org/techniques/T1046/) | Port scanners, `nmap` | Internal scanning from a workstation is unusual |
+| [T1083 File and Directory Discovery](https://attack.mitre.org/techniques/T1083/) | `dir`, `tree`, `find`, `locate` | Heavy use in a short time can indicate staging |
+
+### Lateral Movement
+
+| Technique | Notes |
+| :--- | :--- |
+| [T1021 Remote Services](https://attack.mitre.org/techniques/T1021/) | RDP, SMB/admin shares, DCOM, SSH, VNC, WinRM. Mitigate with MFA and limits on which hosts can reach these services; watch for logons from unusual source hosts |
+| [T1534 Internal Spearphishing](https://attack.mitre.org/techniques/T1534/) | Phishing sent from a compromised internal mailbox; scan internal mail, not just inbound |
+
+### Collection
+
+| Technique | Notes |
+| :--- | :--- |
+| [T1114 Email Collection](https://attack.mitre.org/techniques/T1114/) | Mailbox access and forwarding rules; see the [New Inbox Forwarding Rule](../playbooks/alert-triage/inbox-forwarding-rule.md) runbook |
+| [T1005 Data from Local System](https://attack.mitre.org/techniques/T1005/) | Archive creation and staging before exfiltration |
+| [T1113 Screen Capture](https://attack.mitre.org/techniques/T1113/) | Unusual processes calling screenshot APIs |
+| [T1123 Audio Capture](https://attack.mitre.org/techniques/T1123/) | Unusual processes accessing microphones |
+
+### Command and Control
+
+| Technique | Notes |
+| :--- | :--- |
+| [T1071 Application Layer Protocol](https://attack.mitre.org/techniques/T1071/) | C2 over HTTP, HTTPS, and DNS. Cobalt Strike is a commercial adversary simulation tool that is widely abused for C2. See the [C2 Beaconing](../playbooks/threat-hunting/c2-beaconing.md) hunt |
+| [T1102 Web Service](https://attack.mitre.org/techniques/T1102/) | Legitimate cloud services used for C2 |
+| [T1571 Non-Standard Port](https://attack.mitre.org/techniques/T1571/) | Restrict outbound ports at the firewall and proxy |
+
+### Exfiltration
+
+| Technique | Notes |
+| :--- | :--- |
+| [T1041 Exfiltration Over C2 Channel](https://attack.mitre.org/techniques/T1041/) | Unusual outbound data volumes |
+| [T1567 Exfiltration Over Web Service](https://attack.mitre.org/techniques/T1567/) | Cloud storage uploads, tools like rclone |
+| [T1029 Scheduled Transfer](https://attack.mitre.org/techniques/T1029/) | Outbound transfers at regular intervals |
+
+### Impact
+
+| Technique | What to Look For | Mitigation |
+| :--- | :--- | :--- |
+| [T1486 Data Encrypted for Impact](https://attack.mitre.org/techniques/T1486/) | Mass file renames and modifications; see the [Ransomware](../playbooks/incident-response/ransomware.md) playbook | Offline or immutable backups |
+| [T1490 Inhibit System Recovery](https://attack.mitre.org/techniques/T1490/) | `vssadmin delete shadows`, `wbadmin delete catalog`, `bcdedit /set recoveryenabled no` | Protected backups, alerting on these commands |
+| [T1531 Account Access Removal](https://attack.mitre.org/techniques/T1531/) | Account management events 4723, 4724, 4725, 4726, 4740 | Baselines and alerting on bulk changes |
+| [T1491 Defacement](https://attack.mitre.org/techniques/T1491/) | Unexpected changes to web content | Backups, WAF, protection against SQL injection and XSS |
+
+## How I Use It
+
+During an incident, I map each confirmed attacker action to a technique and look at the tactics around it: if I find credential dumping, I go looking for lateral movement and persistence next. Outside of incidents, I use [ATT&CK Navigator](https://mitre-attack.github.io/attack-navigator/) layers to compare what my detections cover against the techniques most relevant to the environment, and that comparison decides which hunts and detections come next.
+
+## Related
+
+* [Playbooks](../playbooks/index.md), each mapped to the techniques they cover
+* [Threat Hunting](../playbooks/threat-hunting/index.md)
+
+## Resources
+
 * [ATT&CK Enterprise Matrix](https://attack.mitre.org/matrices/enterprise/)
-* [ATT&CK Navigator](https://mitre-attack.github.io/attack-navigator/): build layers to show detection coverage or map an incident
-* Enterprise tactics, in order:
-  * Reconnaissance (TA0043), Resource Development (TA0042), Initial Access (TA0001), Execution (TA0002), Persistence (TA0003), Privilege Escalation (TA0004), Defense Evasion (TA0005), Credential Access (TA0006), Discovery (TA0007), Lateral Movement (TA0008), Collection (TA0009), Command and Control (TA0011), Exfiltration (TA0010), Impact (TA0040)
-* Techniques are added and revised in each ATT&CK release; check the matrix for the current list
-
-## Initial Access
-
-[TA0001](https://attack.mitre.org/tactics/TA0001/)
-
-* [Content Injection](https://attack.mitre.org/techniques/T1659/)
-* [Drive-by Compromise](https://attack.mitre.org/techniques/T1189/)
-* [Exploit Public-Facing Application](https://attack.mitre.org/techniques/T1190/)
-* [External Remote Services](https://attack.mitre.org/techniques/T1133/)
-* [Hardware Additions](https://attack.mitre.org/techniques/T1200/)
-* [Phishing](https://attack.mitre.org/techniques/T1566/)
-* [Replication Through Removable Media](https://attack.mitre.org/techniques/T1091/)
-* [Supply Chain Compromise](https://attack.mitre.org/techniques/T1195/)
-* [Trusted Relationship](https://attack.mitre.org/techniques/T1199/)
-* [Valid Accounts](https://attack.mitre.org/techniques/T1078/)
-
-## Execution
-
-[TA0002](https://attack.mitre.org/tactics/TA0002/)
-
-* [Command and Scripting Interpreter](https://attack.mitre.org/techniques/T1059/): PowerShell, cmd, bash, Python, and similar
-* [Windows Management Instrumentation](https://attack.mitre.org/techniques/T1047/): Windows administration feature that adversaries use to run commands locally and on remote hosts
-* [User Execution](https://attack.mitre.org/techniques/T1204/): a user opens a malicious file or link
-
-## Persistence
-
-[TA0003](https://attack.mitre.org/tactics/TA0003/)
-
-* [Boot or Logon Autostart Execution](https://attack.mitre.org/techniques/T1547/): Run keys, Startup folder, and similar
-* [Scheduled Task/Job](https://attack.mitre.org/techniques/T1053/)
-* [Create Account](https://attack.mitre.org/techniques/T1136/)
-* [External Remote Services](https://attack.mitre.org/techniques/T1133/): for example SSH, VPN, RDP gateways
-
-## Privilege Escalation
-
-[TA0004](https://attack.mitre.org/tactics/TA0004/)
-
-* [Valid Accounts](https://attack.mitre.org/techniques/T1078/): using credentials obtained through phishing or dumping
-* [Exploitation for Privilege Escalation](https://attack.mitre.org/techniques/T1068/)
-
-## Defense Evasion
-
-[TA0005](https://attack.mitre.org/tactics/TA0005/)
-
-* Ways adversaries evade or disable security defenses such as antivirus, EDR, logging, and human analysts
-* [Impair Defenses](https://attack.mitre.org/techniques/T1562/): disrupting security tools
-  * Disable or Modify Tools
-  * Disable Windows Event Logging
-  * Impair Command History Logging, for example setting `HISTCONTROL` so commands are not written to `~/.bash_history`
-  * Disable or Modify System Firewall
-  * Indicator Blocking
-  * Disable or Modify Cloud Firewall
-* [Indicator Removal](https://attack.mitre.org/techniques/T1070/)
-  * Clear Windows Event Logs (Security log cleared: Event ID 1102)
-  * Clear Linux or Mac System Logs
-  * Clear Command History
-  * File Deletion
-  * Timestomp
-
-## Credential Access
-
-[TA0006](https://attack.mitre.org/tactics/TA0006/)
-
-* [OS Credential Dumping](https://attack.mitre.org/techniques/T1003/)
-  * LSASS Memory: credentials stored in memory, for example dumped with Mimikatz
-    * Detect: monitor process access to `lsass.exe` (Sysmon Event ID 10)
-  * `/etc/passwd` and `/etc/shadow`: copied for offline cracking; `/etc/shadow` is readable only by root
-    * Detect: auditd rules on reads of `/etc/shadow`
-* [Brute Force](https://attack.mitre.org/techniques/T1110/)
-  * Includes password guessing, password spraying, credential stuffing, and offline cracking of hashes with tools like [Hashcat](https://hashcat.net/hashcat/)
-  * Mitigations: account lockout policies, strong passwords, MFA, monitoring for failed logons
-
-## Discovery
-
-[TA0007](https://attack.mitre.org/tactics/TA0007/)
-
-* [Account Discovery](https://attack.mitre.org/techniques/T1087/)
-  * Local accounts: `net user` and `net localgroup` (Windows), `id` and `groups` (Linux and macOS), `cat /etc/passwd` (Linux)
-  * Domain accounts: `net user /domain` and `net group "Domain Users" /domain` (Windows), `dscacheutil -q group` (macOS), `ldapsearch` (Linux)
-  * Email and cloud accounts
-  * Mitigation: disable the "Enumerate administrator accounts on elevation" setting with Group Policy so UAC prompts do not list administrator accounts
-* [Network Service Discovery](https://attack.mitre.org/techniques/T1046/)
-* [File and Directory Discovery](https://attack.mitre.org/techniques/T1083/)
-
-## Lateral Movement
-
-[TA0008](https://attack.mitre.org/tactics/TA0008/)
-
-* [Remote Services](https://attack.mitre.org/techniques/T1021/)
-  * Remote Desktop Protocol (RDP)
-  * SMB/Windows Admin Shares
-  * Distributed Component Object Model (DCOM)
-  * SSH
-  * VNC
-  * Windows Remote Management (WinRM)
-  * Mitigations: MFA, restrict which hosts can reach these services, monitor logon activity for unusual source hosts
-* [Internal Spearphishing](https://attack.mitre.org/techniques/T1534/): sending phishing email from a compromised internal mailbox
-  * Mitigation: scan internal email and attachments, not just inbound
-
-## Collection
-
-[TA0009](https://attack.mitre.org/tactics/TA0009/)
-
-* [Email Collection](https://attack.mitre.org/techniques/T1114/)
-* [Audio Capture](https://attack.mitre.org/techniques/T1123/)
-* [Screen Capture](https://attack.mitre.org/techniques/T1113/)
-* [Data from Local System](https://attack.mitre.org/techniques/T1005/)
-* Mitigations and detection: audit mailbox access and forwarding rules, MFA, monitor unusual processes accessing microphones or taking screenshots, monitor for heavy use of `dir`, `find`, `tree`, and `locate` and for staging of archives
-
-## Command and Control
-
-[TA0011](https://attack.mitre.org/tactics/TA0011/)
-
-* [Application Layer Protocol](https://attack.mitre.org/techniques/T1071/): C2 over HTTP, HTTPS, DNS
-  * Cobalt Strike is a commercial adversary simulation tool that is widely abused for C2
-  * Detect: NIDS/NIPS, beaconing analysis on proxy and firewall logs
-* [Web Service](https://attack.mitre.org/techniques/T1102/): legitimate cloud services used for C2
-* [Non-Standard Port](https://attack.mitre.org/techniques/T1571/)
-  * Mitigation: restrict outbound ports at the firewall and proxy, inspect traffic
-
-## Exfiltration
-
-[TA0010](https://attack.mitre.org/tactics/TA0010/)
-
-* [Exfiltration Over C2 Channel](https://attack.mitre.org/techniques/T1041/)
-  * Detect: unusual outbound data volumes, frequency analysis
-* [Scheduled Transfer](https://attack.mitre.org/techniques/T1029/)
-  * Detect: outbound transfers at regular intervals, NIDS
-
-## Impact
-
-[TA0040](https://attack.mitre.org/tactics/TA0040/)
-
-* [Account Access Removal](https://attack.mitre.org/techniques/T1531/): deleting or locking accounts, changing passwords
-  * Detect: Windows account management events (4723, 4724, 4725, 4726, 4740), comparison against baselines
-* [Defacement](https://attack.mitre.org/techniques/T1491/): changing content to deliver a message, intimidate, or claim credit
-  * Mitigation: restore from backup, WAF, defend against SQL injection and cross-site scripting
-* [Data Encrypted for Impact](https://attack.mitre.org/techniques/T1486/): ransomware
-  * Mitigation: offline or immutable backups
-* [Inhibit System Recovery](https://attack.mitre.org/techniques/T1490/): deleting shadow copies and backups before encryption
-  * Detect: command lines using `vssadmin delete shadows`, `wbadmin delete catalog`, and `bcdedit /set recoveryenabled no`
+* [ATT&CK Navigator](https://mitre-attack.github.io/attack-navigator/)
+* [MITRE D3FEND](https://d3fend.mitre.org/), a matching knowledge base of defensive techniques

@@ -1,80 +1,101 @@
 # Windows Artifacts
 
-* LNK files: shortcut files Windows creates when a user opens a file; they record the target path, timestamps, and volume information even after the target is deleted
-  * Location: `C:\Users\<username>\AppData\Roaming\Microsoft\Windows\Recent`
-  * Tools: [Windows File Analyzer](tools/windows-file-analyzer.md), LECmd (Eric Zimmerman)
-* Prefetch files: created when an application runs; record the executable name and path, run count, last run times (up to eight on Windows 8 and later), and files and directories loaded
-  * Location: `C:\Windows\Prefetch`
-  * Prefetch is enabled by default on Windows client versions and usually disabled on Windows Server
-  * Tool: [PECmd](tools/pecmd.md)
-* Jump lists: per-application lists of recently and frequently opened files, stored as AutomaticDestinations-ms and CustomDestinations-ms files
-  * Locations
-    * `C:\Users\<username>\AppData\Roaming\Microsoft\Windows\Recent\AutomaticDestinations`
-    * `C:\Users\<username>\AppData\Roaming\Microsoft\Windows\Recent\CustomDestinations`
-  * Tool: [JumpList Explorer](tools/jumplist-explorer.md)
-* Browsers
-  * Artifacts
-    * Cookies
-    * Favorites/bookmarks
-    * Downloaded files
-    * URLs visited
-    * Searches
-    * Cached pages and images
-  * Tools for collecting artifacts
-    * [KAPE](tools/kape.md)
-    * [Browser History Capturer](tools/browser-history-capturer.md)
-    * [Browser History Viewer](tools/browser-history-viewer.md)
-* Logon Events
-  * Event IDs
-    * 4624: successful logon
-    * 4625: failed logon
-    * 4634: logoff
-    * 4672: special privileges assigned (privileged account logon)
-    * RDP logons: 4624 with logon type 10 (RemoteInteractive); also see the `Microsoft-Windows-TerminalServices-*` logs
-  * Location: `C:\Windows\System32\winevt\Logs\Security.evtx`
-  * More event IDs: [Windows Event Logs](../siem-and-log-analysis/windows-event-logs.md)
-* Locations to check for anomalous files
-  * Recycle Bin
-  * `%TEMP%` (`C:\Users\<username>\AppData\Local\Temp`)
-  * `C:\Users\<username>\Downloads`
-  * `C:\Users\<username>\AppData` and `C:\ProgramData`
-* Artifacts from CMD
-  * Running tasks: `tasklist`
-  * Running tasks with services: `tasklist /svc`
-  * Output to text: `tasklist > tasklist.txt`
-  * Users: `net user`
-  * Users in the Administrators group: `net localgroup administrators`
-  * All local groups: `net localgroup`
-  * Users in a group: `net localgroup GROUP_NAME`
-  * Services: `sc query | more`
-  * Open ports with executables (requires administrator): `netstat -abno`
-  * Note: `wmic` is deprecated and removed from current Windows 11 releases; use PowerShell instead
-* Artifacts from PowerShell
-  * Network information: `Get-NetIPConfiguration` or `Get-NetIPAddress`
-  * Running processes with executable paths: `Get-Process | Select-Object Name, Id, Path`
-  * Process command lines: `Get-CimInstance Win32_Process | Select-Object ProcessId, ParentProcessId, Name, CommandLine`
-  * Local users: `Get-LocalUser`
-  * Details on a local user: `Get-LocalUser -Name JohnDoe | Select-Object *`
-  * Running services: `Get-Service | Where-Object Status -eq "Running"`
-  * Process priority: `Get-Process | Format-Table -View Priority`
-  * Details on a process: `Get-Process -Id 1234 | Select-Object *` (or use `-Name`)
-  * Find a process by name: `Get-Process | Where-Object Name -like "*calc*"`
-  * Scheduled tasks: `Get-ScheduledTask`
-  * Scheduled tasks in the Ready state: `Get-ScheduledTask | Where-Object State -eq "Ready"`
-  * Details on a scheduled task: `Get-ScheduledTask -TaskName 'NAME' | Select-Object *`
-  * Network connections: `Get-NetTCPConnection -State Established`
+Where Windows records evidence of program execution, file access, and user activity, plus commands for live response.
+
+## Why It Matters
+
+Windows keeps records of what ran, what was opened, and what was deleted, often long after the files themselves are gone. These artifacts let an investigator reconstruct activity on a host even without EDR, and confirm or fill gaps in what EDR recorded.
+
+## Reference
+
+### Execution and File Access
+
+| Artifact | Location | What It Shows | Tool |
+| :--- | :--- | :--- | :--- |
+| Prefetch | `C:\Windows\Prefetch` | Programs that ran, run count, last run times (up to eight on Windows 8 and later), files loaded | [PECmd](tools/pecmd.md) |
+| LNK files | `C:\Users\<user>\AppData\Roaming\Microsoft\Windows\Recent` | Files a user opened, with target path and timestamps, even if the target was deleted | LECmd, [Windows File Analyzer](tools/windows-file-analyzer.md) |
+| Jump lists | `...\Recent\AutomaticDestinations` and `...\Recent\CustomDestinations` | Recently and frequently opened files for each application | [JumpList Explorer](tools/jumplist-explorer.md) |
+| Recycle Bin | `C:\$Recycle.Bin\<SID>` (Vista and later), `C:\RECYCLER` (XP) | Deleted files: `$I` files hold the original path, size, and deletion time; `$R` files hold the contents | RBCmd |
+| Browser history | Browser profile folders | URLs visited, downloads, searches, cached content | [KAPE](tools/kape.md), [Browser History Capturer](tools/browser-history-capturer.md) and [Viewer](tools/browser-history-viewer.md) |
+| Event logs | `C:\Windows\System32\winevt\Logs` | Logons, process creation, services, and more | See [Windows Event Logs](../siem-and-log-analysis/windows-event-logs.md) |
+
+Prefetch is enabled by default on Windows client versions and usually disabled on Windows Server.
+
+### Logon Evidence
+
+| Event ID | Meaning |
+| :--- | :--- |
+| 4624 | Successful logon (RDP logons are logon type 10) |
+| 4625 | Failed logon |
+| 4634 | Logoff |
+| 4672 | Special privileges assigned (privileged account logon) |
+
+RDP activity also appears in the `Microsoft-Windows-TerminalServices-*` logs.
+
+### Locations to Check for Suspicious Files
+
 * Recycle Bin
-  * Location
-    * Windows Vista and later: `C:\$Recycle.Bin\<SID>`
-    * Windows XP and earlier: `C:\RECYCLER`
-  * Each deleted file creates a `$I` file (original path, size, deletion time) and a `$R` file (the contents)
-  * Show hidden files: `dir /a` or `Get-ChildItem -Force`
-  * Reference: <https://df-stream.com/2016/04/fun-with-recycle-bin-i-files-windows-10/>
-* Processes
-  * Know the normal parent-child relationships of core Windows processes so outliers stand out
-  * Reference: <https://www.socinvestigation.com/important-windows-processes-for-threat-hunting/>
-  * Examples of suspicious parent-child relationships
-    * Office applications spawning `cmd.exe` or `powershell.exe`
-    * PowerShell spawning another PowerShell process with an encoded command
-  * Extract strings from an executable with Sysinternals Strings: `strings -a file_name.exe > strings_from_file.txt`
-  * Dump a process for analysis with Sysinternals ProcDump: `.\procdump.exe -ma <PID>`
+* `%TEMP%` (`C:\Users\<user>\AppData\Local\Temp`)
+* `C:\Users\<user>\Downloads`
+* `C:\Users\<user>\AppData` and `C:\ProgramData`
+* `C:\Users\Public`
+
+### Live Response: Command Prompt
+
+| Task | Command |
+| :--- | :--- |
+| Running processes | `tasklist` |
+| Processes with their services | `tasklist /svc` |
+| Users | `net user` |
+| Members of Administrators | `net localgroup administrators` |
+| Local groups | `net localgroup` |
+| Services | `sc query | more` |
+| Connections and listening ports with executables (administrator) | `netstat -abno` |
+
+`wmic` is deprecated and removed from current Windows 11 releases; use PowerShell instead.
+
+### Live Response: PowerShell
+
+| Task | Command |
+| :--- | :--- |
+| Network configuration | `Get-NetIPConfiguration` |
+| Processes with executable paths | `Get-Process | Select-Object Name, Id, Path` |
+| Process command lines and parents | `Get-CimInstance Win32_Process | Select-Object ProcessId, ParentProcessId, Name, CommandLine` |
+| Find a process by name | `Get-Process | Where-Object Name -like "*calc*"` |
+| Established network connections | `Get-NetTCPConnection -State Established` |
+| Local users | `Get-LocalUser` |
+| Details on one user | `Get-LocalUser -Name JohnDoe | Select-Object *` |
+| Running services | `Get-Service | Where-Object Status -eq "Running"` |
+| Scheduled tasks | `Get-ScheduledTask` |
+| Details on one task | `Get-ScheduledTask -TaskName 'NAME' | Select-Object *` |
+| Hidden files | `Get-ChildItem -Force` |
+
+### Process Relationships
+
+Knowing normal parent-child relationships makes the abnormal ones stand out:
+
+| Normal | Suspicious |
+| :--- | :--- |
+| `services.exe` -> `svchost.exe` | `svchost.exe` with any other parent |
+| `wininit.exe` -> `lsass.exe` (one instance) | More than one `lsass.exe`, or one in the wrong path |
+| `explorer.exe` -> user applications | Office applications, browsers, or `wscript.exe` -> `cmd.exe` or `powershell.exe` |
+
+## How I Use It
+
+On a live host, I start with the PowerShell process and connection commands to see what is running and talking right now, then collect artifacts with [KAPE](tools/kape.md) or EDR live response before making any changes. Prefetch and Amcache tell me what ran; LNK files, jump lists, and shellbags tell me what the user opened; the event logs tie it to accounts and times. I parse it all to CSV and build one timeline.
+
+For anything suspicious, I pull strings with Sysinternals Strings (`strings -a file.exe > strings.txt`) and, if needed, dump the process with ProcDump (`.\procdump.exe -ma <PID>`). See [Sysinternals](tools/sysinternals.md).
+
+## Related
+
+* [Windows Event Logs](../siem-and-log-analysis/windows-event-logs.md)
+* [Endpoint Malware](../playbooks/incident-response/endpoint-malware.md) playbook
+* [Persistence](../playbooks/threat-hunting/persistence.md) hunt
+* [KAPE](tools/kape.md), [PECmd](tools/pecmd.md), [Sysinternals](tools/sysinternals.md)
+
+## Resources
+
+* [Eric Zimmerman's Tools](https://ericzimmerman.github.io/)
+* [Fun with Recycle Bin $I files](https://df-stream.com/2016/04/fun-with-recycle-bin-i-files-windows-10/)
+* [Important Windows Processes for Threat Hunting](https://www.socinvestigation.com/important-windows-processes-for-threat-hunting/)
+* [SANS DFIR Posters and Cheat Sheets](https://www.sans.org/posters/)
