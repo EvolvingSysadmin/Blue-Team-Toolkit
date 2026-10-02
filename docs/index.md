@@ -6,6 +6,7 @@ The content comes from hands-on work as a security administrator, lab work, and 
 
 ## Sections
 
+* [Playbooks](playbooks/index.md): how I respond to incidents, triage alerts, hunt, and handle urgent vulnerabilities
 * [Incident Response](incident-response/index.md): lifecycle, preparation, containment, and post-incident work
 * [Threat Intelligence](threat-intelligence/index.md): MITRE ATT&CK and adversary behavior
 * [SIEM and Log Analysis](siem-and-log-analysis/index.md): Windows, Linux, web server, and network device logs; Splunk, Sysmon, DeepBlueCLI

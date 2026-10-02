@@ -12,6 +12,10 @@
 * [Containment, Eradication, and Recovery](containment-eradication-recovery.md)
 * [Post-Incident Activity](post-incident-activity.md)
 
+## Playbooks
+
+* [Incident Response Playbooks](../playbooks/incident-response/index.md): step-by-step procedures for phishing, account compromise, ransomware, malware, edge devices, and Active Directory compromise
+
 ## Resources
 
 * [NIST SP 800-61 Rev. 3](https://csrc.nist.gov/pubs/sp/800/61/r3/final)
