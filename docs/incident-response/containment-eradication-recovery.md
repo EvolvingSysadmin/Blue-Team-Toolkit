@@ -18,23 +18,27 @@ Containment limits the damage; eradication makes sure the attacker cannot come b
 | Identity | Disabling accounts; resetting passwords; revoking sessions and tokens; removing attacker MFA methods |
 | Data | Taking file shares offline; protecting backups by disconnecting or locking them down |
 
+!!! warning "Isolate, don't power off"
+    Powering off a compromised host destroys memory, which can hold the attacker's tools, injected code, network connections, and sometimes encryption keys. Use EDR isolation or unplug the network cable, and capture memory first when it matters.
+
 ### Eradication
 
-* Remove malware, tools, and persistence mechanisms (scheduled tasks, services, Run keys, web shells, inbox rules, OAuth apps)
-* Reimage compromised systems instead of cleaning them where possible
-* Reset credentials the attacker had or could have had, including service accounts
-* Close the initial access vector: patch, reconfigure, or remove the exposed service
+| Action | Details | Why |
+| :--- | :--- | :--- |
+| Remove persistence | Scheduled tasks, services, Run keys, web shells, inbox rules, OAuth apps, attacker-created accounts | Anything left behind is a way back in |
+| Rebuild compromised systems | Reimage instead of cleaning wherever possible | A cleaned system is only as clean as your understanding of the attack |
+| Reset exposed credentials | Every account the attacker had or could have had, including service accounts | Stolen passwords and tokens outlive the malware |
+| Close the access vector | Patch, reconfigure, or remove the exposed service or account | Otherwise the attacker can repeat the same entry |
 
 ### Recovery
 
-* Restore from known-good backups that predate the compromise
-* Patch and harden systems before they reconnect
-* Update EDR, antivirus, IDS/IPS, and SIEM rules with indicators from the incident
-* Monitor restored systems closely for signs of reinfection
-* Share indicators with relevant partners
-
-!!! warning "Isolate, don't power off"
-    Powering off a compromised host destroys memory, which can hold the attacker's tools, injected code, network connections, and sometimes encryption keys. Use EDR isolation or unplug the network cable, and capture memory first when it matters.
+| Action | Details | Why |
+| :--- | :--- | :--- |
+| Restore from known-good backups | Backups that predate the compromise | Later backups may contain the attacker's changes |
+| Patch and harden before reconnecting | Apply updates and fix the weaknesses that were used | A restored system is otherwise just as vulnerable |
+| Update detections | EDR, antivirus, IDS/IPS, and SIEM rules with indicators from the incident | Catches a return attempt early |
+| Monitor closely | Watch restored systems and affected accounts for at least a few weeks | Reinfection often comes back through access that was missed |
+| Share indicators | With partners, ISACs, and vendors as appropriate | Helps others and often brings back useful intelligence |
 
 ## How I Use It
 
@@ -44,11 +48,12 @@ For recovery, I would rather rebuild than clean. Reimaging a host or rebuilding 
 
 ## Related
 
-* [Ransomware](../playbooks/incident-response/ransomware.md) playbook
-* [Active Directory Privileged Compromise](../playbooks/incident-response/ad-privileged-compromise.md) playbook
-* [Memory Artifacts](../endpoint-forensics/memory-artifacts.md)
-* [Detection and Analysis](detection-and-analysis.md), the previous phase; [Post-Incident Activity](post-incident-activity.md), the next
+| Page | Relevance |
+| :--- | :--- |
+| [Ransomware](../playbooks/incident-response/ransomware.md) | Containment and recovery at the largest scale |
+| [Active Directory Privileged Compromise](../playbooks/incident-response/ad-privileged-compromise.md) | Coordinated eviction when the attacker has domain access |
+| [Memory Artifacts](../endpoint-forensics/memory-artifacts.md) | Capturing memory before containment changes the system |
+| [Detection and Analysis](detection-and-analysis.md) | The previous phase |
+| [Post-Incident Activity](post-incident-activity.md) | The next phase |
 
-## Resources
-
-* [NIST SP 800-61 Rev. 3](https://csrc.nist.gov/pubs/sp/800/61/r3/final)
+**Resources:** [NIST SP 800-61 Rev. 3](https://csrc.nist.gov/pubs/sp/800/61/r3/final)
