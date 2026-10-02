@@ -1,39 +1,54 @@
 # Containment, Eradication, and Recovery
 
-## Containment
+Stopping the attacker from doing more damage, removing their access, and returning systems to normal operation.
 
-* Perimeter containment
-  * Block inbound and outbound traffic
-  * IDS/IPS filters to identify further malicious traffic and take automated actions, such as blocking active connections
-  * Web Application Firewall policies to detect and act on web attacks
-  * DNS sinkholing or null routing, so internal hosts cannot resolve a malicious domain
-* Network containment
-  * Switch-based VLAN isolation
-  * Router-based segment isolation
-  * Port blocking
-  * IP or MAC address blocking
-  * Access Control Lists (ACLs) to restrict what hosts can reach
-* Endpoint containment
-  * Isolate the host with EDR network containment where available
-  * Disconnect the host from the network (disable Wi-Fi, unplug Ethernet)
-  * Block traffic with the local firewall
-  * Host intrusion prevention system (HIPS) actions
-  * Capture volatile data such as memory before powering off; a shutdown destroys memory evidence
-* Identity containment
-  * Disable or reset compromised accounts
-  * Revoke active sessions and tokens
-  * Reset credentials that may have been exposed, including service accounts
+## Why It Matters
 
-## Eradication
+Containment limits the damage; eradication makes sure the attacker cannot come back the way they got in or through persistence they left behind; recovery brings the business back. Doing them out of order, or only partly, is how incidents repeat a week later.
 
-* Remove malicious artifacts and persistence mechanisms
-* Reimage compromised systems
-* Close the access vector that was used
+## Reference
 
-## Recovery
+### Containment Options
 
-* Restore from known-good backups
-* Patch systems and disable unneeded services
+| Level | Options |
+| :--- | :--- |
+| Perimeter | Block inbound and outbound traffic to attacker infrastructure; IDS/IPS rules; WAF policies; DNS sinkholing |
+| Network | VLAN isolation; segment isolation at the router or firewall; port blocking; IP or MAC blocking; ACLs |
+| Endpoint | EDR network isolation; disconnecting from the network; host firewall rules; HIPS actions |
+| Identity | Disabling accounts; resetting passwords; revoking sessions and tokens; removing attacker MFA methods |
+| Data | Taking file shares offline; protecting backups by disconnecting or locking them down |
+
+### Eradication
+
+* Remove malware, tools, and persistence mechanisms (scheduled tasks, services, Run keys, web shells, inbox rules, OAuth apps)
+* Reimage compromised systems instead of cleaning them where possible
+* Reset credentials the attacker had or could have had, including service accounts
+* Close the initial access vector: patch, reconfigure, or remove the exposed service
+
+### Recovery
+
+* Restore from known-good backups that predate the compromise
+* Patch and harden systems before they reconnect
 * Update EDR, antivirus, IDS/IPS, and SIEM rules with indicators from the incident
 * Monitor restored systems closely for signs of reinfection
-* Share intelligence with relevant partners
+* Share indicators with relevant partners
+
+!!! warning "Isolate, don't power off"
+    Powering off a compromised host destroys memory, which can hold the attacker's tools, injected code, network connections, and sometimes encryption keys. Use EDR isolation or unplug the network cable, and capture memory first when it matters.
+
+## How I Use It
+
+I contain as soon as the scope is good enough, not perfect: an attacker with an active session in a mailbox does not wait for me to finish reading the logs. For a single host or account, that means isolating and resetting right away. For a widespread compromise where the attacker has privileged access, I hold off on piecemeal containment and plan a coordinated eviction instead, so they cannot react to what I am doing.
+
+For recovery, I would rather rebuild than clean. Reimaging a host or rebuilding a server from a known-good state is something I can trust; a cleaned system is only as clean as my understanding of everything the attacker did.
+
+## Related
+
+* [Ransomware](../playbooks/incident-response/ransomware.md) playbook
+* [Active Directory Privileged Compromise](../playbooks/incident-response/ad-privileged-compromise.md) playbook
+* [Memory Artifacts](../endpoint-forensics/memory-artifacts.md)
+* [Detection and Analysis](detection-and-analysis.md), the previous phase; [Post-Incident Activity](post-incident-activity.md), the next
+
+## Resources
+
+* [NIST SP 800-61 Rev. 3](https://csrc.nist.gov/pubs/sp/800/61/r3/final)

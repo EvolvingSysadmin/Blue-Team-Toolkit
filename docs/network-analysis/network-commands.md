@@ -1,28 +1,35 @@
 # Network Commands
 
-* IP information
-  * Windows: `ipconfig /all` or `Get-NetIPConfiguration`
-  * Linux: `ip a`
-* Routing tables
-  * Windows: `route print`
-  * Linux: `ip r`
-* ARP cache
-  * Windows: `arp -a`
-  * Linux: `ip neigh`
-* Traceroute
-  * Windows: `tracert [host]`
-  * Linux: `traceroute [host]`; TCP traceroute to a specific port: `sudo traceroute -T -p 443 [host]`
-* DNS
-  * Windows: `nslookup [domain]` or `Resolve-DnsName [domain]`
-  * Linux: `dig [domain]`
-  * Mail servers: `dig [domain] MX`
-  * A record only: `dig [domain] A +short`
-  * TXT records (SPF, DMARC): `dig [domain] TXT` and `dig _dmarc.[domain] TXT`
-* Connections and listening ports
-  * Windows: `netstat -ano` (connections with PIDs), `netstat -ab` (with executable names, requires administrator), `Get-NetTCPConnection`
-  * Linux: `ss -tulnp` (listening TCP/UDP with processes), `ss -tunap` (all connections); `netstat -tulnp` on older systems
-  * Protocol statistics: `netstat -s`
-* Connectivity
-  * Ping: `ping -n 4 [host]` (Windows), `ping -c 4 [host]` (Linux)
-  * Test a TCP port from Windows: `Test-NetConnection [host] -Port 443`
-  * Test a TCP port from Linux: `nc -zv [host] 443`
+Built-in Windows and Linux commands for checking a host's network configuration and connections.
+
+## Why It Matters
+
+On a host under investigation, these commands answer the first network questions without installing anything: what IP the host has, what it is connected to, what is listening, and whether a destination is reachable.
+
+## Reference
+
+| Task | Windows | Linux |
+| :--- | :--- | :--- |
+| IP configuration | `ipconfig /all` or `Get-NetIPConfiguration` | `ip a` |
+| Routing table | `route print` | `ip r` |
+| ARP cache | `arp -a` | `ip neigh` |
+| Traceroute | `tracert [host]` | `traceroute [host]`; TCP to a port: `sudo traceroute -T -p 443 [host]` |
+| DNS lookup | `nslookup [domain]` or `Resolve-DnsName [domain]` | `dig [domain]` |
+| Mail servers | `Resolve-DnsName [domain] -Type MX` | `dig [domain] MX` |
+| A record only | `Resolve-DnsName [domain] -Type A` | `dig [domain] A +short` |
+| SPF and DMARC records | `Resolve-DnsName [domain] -Type TXT` | `dig [domain] TXT`, `dig _dmarc.[domain] TXT` |
+| Connections with process IDs | `netstat -ano` or `Get-NetTCPConnection` | `ss -tunap` |
+| Listening ports with processes | `netstat -abno` (requires administrator) | `ss -tulnp` (or `netstat -tulnp` on older systems) |
+| Protocol statistics | `netstat -s` | `netstat -s` or `nstat` |
+| Ping | `ping -n 4 [host]` | `ping -c 4 [host]` |
+| Test a TCP port | `Test-NetConnection [host] -Port 443` | `nc -zv [host] 443` |
+
+## How I Use It
+
+On a suspect Windows host, `netstat -ano` and `Get-NetTCPConnection` tie connections to process IDs, which I then look up with `tasklist` or `Get-Process`. An established connection to an unfamiliar public IP from a process that should not be talking to the internet is one of the quickest leads there is. I record the output before containing the host, because isolation ends those connections.
+
+## Related
+
+* [Common Ports](common-ports.md)
+* [Windows Artifacts](../endpoint-forensics/windows-artifacts.md)
+* [Linux Artifacts](../endpoint-forensics/linux-artifacts.md)

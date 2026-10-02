@@ -1,20 +1,25 @@
 # Incident Response
 
-* [NIST SP 800-61 Rev. 3](https://csrc.nist.gov/pubs/sp/800/61/r3/final) is the current NIST incident response guidance. It replaces Rev. 2 and maps incident response activities to the NIST Cybersecurity Framework (CSF) 2.0 functions: Govern, Identify, Protect, Detect, Respond, and Recover.
-* The Rev. 2 lifecycle is still the most common way to organize response work and is used throughout this section:
-  * Preparation -> Detection and Analysis -> Containment, Eradication, and Recovery -> Post-Incident Activity
-* SANS uses a six-step version of the same model (PICERL): Preparation, Identification, Containment, Eradication, Recovery, Lessons Learned
+The incident response lifecycle and what happens in each phase. For step-by-step procedures for specific incident types, see the [Incident Response Playbooks](../playbooks/incident-response/index.md).
 
-## Phases
+## Frameworks
 
-* [Preparation](preparation.md)
-* [Detection and Analysis](detection-and-analysis.md)
-* [Containment, Eradication, and Recovery](containment-eradication-recovery.md)
-* [Post-Incident Activity](post-incident-activity.md)
+| Framework | Model |
+| :--- | :--- |
+| [NIST SP 800-61 Rev. 3](https://csrc.nist.gov/pubs/sp/800/61/r3/final) | Current NIST guidance. Maps incident response activities to the CSF 2.0 functions: Govern, Identify, Protect, Detect, Respond, Recover |
+| NIST SP 800-61 Rev. 2 | The four-phase lifecycle most teams still organize around: Preparation; Detection and Analysis; Containment, Eradication, and Recovery; Post-Incident Activity |
+| SANS PICERL | The same lifecycle in six steps: Preparation, Identification, Containment, Eradication, Recovery, Lessons Learned |
 
-## Playbooks
+This section follows the four-phase lifecycle.
 
-* [Incident Response Playbooks](../playbooks/incident-response/index.md): step-by-step procedures for phishing, account compromise, ransomware, malware, edge devices, and Active Directory compromise
+## Pages
+
+| Page | Description |
+| :--- | :--- |
+| [Preparation](preparation.md) | The plan, team, visibility, and controls in place before an incident |
+| [Detection and Analysis](detection-and-analysis.md) | Validating alerts, scoping, and building the timeline |
+| [Containment, Eradication, and Recovery](containment-eradication-recovery.md) | Stopping the spread, removing the attacker, and restoring service |
+| [Post-Incident Activity](post-incident-activity.md) | Lessons learned, reporting, and feeding improvements back in |
 
 ## Resources
 

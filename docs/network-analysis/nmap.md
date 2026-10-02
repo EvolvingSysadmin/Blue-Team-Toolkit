@@ -1,8 +1,23 @@
 # Nmap
 
-* Description: network scanner for host discovery, port scanning, service and OS detection
-* Installation: `sudo apt install nmap` or download from <https://nmap.org/download.html>
-* Defenders use Nmap to verify exposed services and firewall rules, build asset inventories, and confirm what an attacker's scan would have seen
+Network scanner for host discovery, port scanning, and service and OS detection.
+
+## When I Use It
+
+* Verifying what is actually exposed on a host or network segment, including from outside the firewall
+* Checking that firewall rule changes did what they were supposed to
+* Finding hosts and services missing from the asset inventory
+* Seeing what an attacker's scan would have found
+
+!!! warning "Only scan what you are authorized to scan"
+    Get written approval before scanning networks you do not own or manage, and let the network team know, since scans can trip IDS alerts and occasionally disrupt fragile devices.
+
+## Installation
+
+* Linux: `sudo apt install nmap`
+* Windows and macOS: download from <https://nmap.org/download.html>
+
+## Common Tasks
 
 | Option | Example | Description |
 | :--- | :--- | :--- |
@@ -20,10 +35,24 @@
 | -v | `nmap -v [target]` | Verbose output |
 | -oA | `nmap -oA scan1 [target]` | Save output in normal, XML, and grepable formats |
 
-* Detecting Nmap scans
-  * Many connection attempts from one source to many ports or hosts in a short time
-  * SYN scans leave half-open connections: SYN, SYN/ACK, then RST from the scanner
-  * Firewall and IDS logs (for example Suricata or Snort port scan signatures)
-* Resources
-  * [Nmap Reference Guide](https://nmap.org/book/man.html)
-  * [Port Scanning Techniques](https://nmap.org/book/man-port-scanning-techniques.html)
+## Reading the Output
+
+| State | Meaning |
+| :--- | :--- |
+| open | A service is accepting connections |
+| closed | The host responded, but nothing is listening |
+| filtered | No response or an ICMP error; a firewall is probably dropping the traffic |
+| unfiltered | Reachable, but Nmap cannot tell whether open or closed (ACK scans) |
+
+Recognizing Nmap in logs: many connection attempts from one source to many ports or hosts in a short time; SYN scans leave a pattern of SYN, SYN/ACK, then RST from the scanner; IDS signatures for port scans.
+
+## Related
+
+* [Common Ports](common-ports.md)
+* [Wireshark](wireshark.md)
+* [Critical CVE Response](../playbooks/operations/critical-cve-response.md)
+
+## Resources
+
+* [Nmap Reference Guide](https://nmap.org/book/man.html)
+* [Port Scanning Techniques](https://nmap.org/book/man-port-scanning-techniques.html)
